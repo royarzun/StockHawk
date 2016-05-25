@@ -10,6 +10,10 @@ import com.google.android.gms.gcm.TaskParams;
  * Created by sam_chordas on 10/1/15.
  */
 public class StockIntentService extends IntentService {
+  private static final String ARG_SYMBOL = "symbol";
+
+  public static final String EXTRA_TAG = "tag";
+  public static final String EXTRA_SYMBOL = "symbol";
 
   public StockIntentService(){
     super(StockIntentService.class.getName());
@@ -23,11 +27,11 @@ public class StockIntentService extends IntentService {
     Log.d(StockIntentService.class.getSimpleName(), "Stock Intent Service");
     StockTaskService stockTaskService = new StockTaskService(this);
     Bundle args = new Bundle();
-    if (intent.getStringExtra("tag").equals("add")){
-      args.putString("symbol", intent.getStringExtra("symbol"));
+    if (intent.getStringExtra(EXTRA_TAG).equals("add")){
+      args.putString(ARG_SYMBOL, intent.getStringExtra(EXTRA_SYMBOL));
     }
     // We can call OnRunTask from the intent service to force it to run immediately instead of
     // scheduling a task.
-    stockTaskService.onRunTask(new TaskParams(intent.getStringExtra("tag"), args));
+    stockTaskService.onRunTask(new TaskParams(intent.getStringExtra(EXTRA_TAG), args));
   }
 }
