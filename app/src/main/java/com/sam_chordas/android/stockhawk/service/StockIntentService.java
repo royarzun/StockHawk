@@ -15,6 +15,9 @@ public class StockIntentService extends IntentService {
   public static final String EXTRA_TAG = "tag";
   public static final String EXTRA_SYMBOL = "symbol";
 
+  public static final String ACTION_ADD = "add";
+  public static final String ACTION_INIT = "init";
+
   public StockIntentService(){
     super(StockIntentService.class.getName());
   }
@@ -27,7 +30,7 @@ public class StockIntentService extends IntentService {
     Log.d(StockIntentService.class.getSimpleName(), "Stock Intent Service");
     StockTaskService stockTaskService = new StockTaskService(this);
     Bundle args = new Bundle();
-    if (intent.getStringExtra(EXTRA_TAG).equals("add")){
+    if (intent.getStringExtra(EXTRA_TAG).equals(ACTION_ADD)){
       args.putString(ARG_SYMBOL, intent.getStringExtra(EXTRA_SYMBOL));
     }
     // We can call OnRunTask from the intent service to force it to run immediately instead of

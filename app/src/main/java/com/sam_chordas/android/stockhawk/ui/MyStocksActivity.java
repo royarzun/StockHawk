@@ -47,7 +47,7 @@ public class MyStocksActivity extends AppCompatActivity {
     mServiceIntent = new Intent(this, StockIntentService.class);
     if (savedInstanceState == null){
       // Run the initialize task service so that some stocks appear upon an empty database
-      mServiceIntent.putExtra(StockIntentService.EXTRA_TAG, "init");
+      mServiceIntent.putExtra(StockIntentService.EXTRA_TAG, StockIntentService.ACTION_INIT);
       if (isConnected){
         startService(mServiceIntent);
       } else{

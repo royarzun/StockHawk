@@ -90,10 +90,10 @@ public class StockTaskService extends GcmTaskService{
           e.printStackTrace();
         }
       }
-    } else if (params.getTag().equals("add")){
+    } else if (params.getTag().equals(StockIntentService.ACTION_ADD)){
       isUpdate = false;
       // get symbol from params.getExtra and build query
-      String stockInput = params.getExtras().getString("symbol");
+      String stockInput = params.getExtras().getString(StockIntentService.EXTRA_SYMBOL);
       try {
         urlStringBuilder.append(URLEncoder.encode("\""+stockInput+"\")", "UTF-8"));
       } catch (UnsupportedEncodingException e){
