@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,7 @@ import com.sam_chordas.android.stockhawk.service.StockIntentService;
 
 public class StocksFragment extends Fragment implements OnSharedPreferenceChangeListener,
         LoaderCallbacks<Cursor>{
+    private static final String TAG = StockFragment.class.getSimpleName();
 
     private static final int CURSOR_LOADER_ID = 0;
     private QuoteCursorAdapter mCursorAdapter;
@@ -69,9 +71,12 @@ public class StocksFragment extends Fragment implements OnSharedPreferenceChange
         mCursorAdapter = new QuoteCursorAdapter(getActivity(), null);
         recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(getActivity(),
                 new RecyclerViewItemClickListener.OnItemClickListener() {
-                    @Override public void onItemClick(View v, int position) {
-                        //TODO:
-                        // do something on item click
+                    @Override
+                    public void onItemClick(View v, int position) {
+                        StockFragment f = StockFragment.newInstance("1");
+                        getFragmentManager().beginTransaction()
+                                            .replace(R.id.stocks_fragment, f)
+                                            .addToBackStack(null).commit();
                     }
                 }));
         recyclerView.setAdapter(mCursorAdapter);
@@ -181,7 +186,6 @@ public class StocksFragment extends Fragment implements OnSharedPreferenceChange
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }
