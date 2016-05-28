@@ -20,6 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import butterknife.ButterKnife;
+import butterknife.Bind;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.melnykov.fab.FloatingActionButton;
 import com.sam_chordas.android.stockhawk.R;
@@ -37,8 +40,10 @@ public class StocksFragment extends Fragment implements OnSharedPreferenceChange
     private static final int CURSOR_LOADER_ID = 0;
     private QuoteCursorAdapter mCursorAdapter;
 
-
     private OnFragmentInteractionListener mListener;
+
+    @Bind(R.id.fab) FloatingActionButton fab;
+    @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
     public StocksFragment() {
         // Required empty public constructor
@@ -65,10 +70,13 @@ public class StocksFragment extends Fragment implements OnSharedPreferenceChange
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.fragment_stocks, container, false);
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        ButterKnife.bind(this, rootView);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mCursorAdapter = new QuoteCursorAdapter(getActivity(), null);
+
         recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(getActivity(),
                 new RecyclerViewItemClickListener.OnItemClickListener() {
                     @Override
@@ -82,7 +90,6 @@ public class StocksFragment extends Fragment implements OnSharedPreferenceChange
         recyclerView.setAdapter(mCursorAdapter);
 
 
-        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         fab.attachToRecyclerView(recyclerView);
         /*fab.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
