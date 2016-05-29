@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,11 +27,6 @@ public class MyStocksActivity extends AppCompatActivity {
     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
     */
 
-    /**
-    * Used to store the last screen title. For use in {@link #restoreActionBar()}.
-    */
-    boolean isConnected;
-
     @Bind(R.id.my_stocks_toolbar) Toolbar toolbar;
 
     @Override
@@ -43,17 +37,13 @@ public class MyStocksActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-        ConnectivityManager cm =
-            (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
         // The intent service is for executing immediate pulls from the Yahoo API
         // GCMTaskService can only schedule tasks, they cannot execute immediately
         Intent mServiceIntent = new Intent(this, StockIntentService.class);
         if (savedInstanceState == null){
             // Run the initialize task service so that some stocks appear upon an empty database
             mServiceIntent.putExtra(StockIntentService.EXTRA_TAG, StockIntentService.ACTION_INIT);
-            if (isConnected){
+            if (isNetworkAvailable()){
                 startService(mServiceIntent);
             } else{
                 networkToast();
@@ -75,16 +65,9 @@ public class MyStocksActivity extends AppCompatActivity {
         Toast.makeText(this, getString(R.string.network_toast), Toast.LENGTH_LONG).show();
     }
 
-    public void restoreActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.my_stocks, menu);
-        restoreActionBar();
         return true;
     }
 
@@ -104,5 +87,12 @@ public class MyStocksActivity extends AppCompatActivity {
             this.getContentResolver().notifyChange(QuoteProvider.Quotes.CONTENT_URI, null);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager cm =
+                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 }
