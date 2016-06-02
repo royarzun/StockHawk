@@ -1,24 +1,25 @@
 package com.sam_chordas.android.stockhawk.service;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.os.RemoteException;
 import android.util.Log;
-import com.google.android.gms.gcm.GcmNetworkManager;
+
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
+
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
-import com.sam_chordas.android.stockhawk.rest.Utils;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import com.sam_chordas.android.stockhawk.data.models.IYahooStockQuotesAPI;
+import com.sam_chordas.android.stockhawk.data.models.Query;
+
+import com.squareup.okhttp.OkHttpClient;;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by sam_chordas on 9/30/15.
@@ -26,12 +27,15 @@ import java.net.URLEncoder;
  * and is used for the initialization and adding task as well.
  */
 public class StockTaskService extends GcmTaskService{
-    private String LOG_TAG = StockTaskService.class.getSimpleName();
+    private static final String LOG_TAG = StockTaskService.class.getSimpleName();
+    private static final String INIT_STOCKS = "\"YHOO\",\"AAPL\",\"GOOG\",\"MSFT\"";
 
     private OkHttpClient client = new OkHttpClient();
     private Context mContext;
     private StringBuilder mStoredSymbols = new StringBuilder();
     private boolean isUpdate;
+    private IYahooStockQuotesAPI yahooStockQuotesAPI;
+    private Call<Query> stockQuotesQuery;
 
     public StockTaskService(){}
 
@@ -39,99 +43,67 @@ public class StockTaskService extends GcmTaskService{
         mContext = context;
     }
 
-    private String fetchData(String url) throws IOException{
-        Request request = new Request.Builder().url(url).build();
-        Response response = client.newCall(request).execute();
-        return response.body().string();
-    }
-
     @Override
-    public int onRunTask(TaskParams params){
-        Cursor initQueryCursor;
-        if (mContext == null){
+    public int onRunTask(TaskParams params) {
+        if (mContext == null) {
             mContext = this;
         }
 
-        StringBuilder urlStringBuilder = new StringBuilder();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(IYahooStockQuotesAPI.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
-        try{
-            // Base URL for the Yahoo query
-            urlStringBuilder.append("https://query.yahooapis.com/v1/public/yql?q=");
-            urlStringBuilder.append(URLEncoder.encode("select * from yahoo.finance.quotes where symbol "
-                    + "in (", "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        yahooStockQuotesAPI = retrofit.create(IYahooStockQuotesAPI.class);
+        stockQuotesQuery = yahooStockQuotesAPI.getStocks(getQuery(params));
+        stockQuotesQuery.enqueue(new Callback<Query>() {
+            @Override
+            public void onResponse(Call<Query> call, Response<Query> response) {
+                // TODO: Store data
+            }
 
+            @Override
+            public void onFailure(Call<Query> call, Throwable t) {
+                // TODO: Handling failure
+                Log.d(LOG_TAG, t.getMessage());
+            }
+        });
+        return 1;
+    }
+
+    private String getQuery(TaskParams params){
+        final StringBuilder urlStringBuilder = new StringBuilder();
+        Cursor initQueryCursor;
         if (params.getTag().equals("init") || params.getTag().equals("periodic")){
             isUpdate = true;
-            initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
+            initQueryCursor = mContext.getContentResolver()
+                    .query(QuoteProvider.Quotes.CONTENT_URI,
                     new String[] { "Distinct " + QuoteColumns.SYMBOL }, null, null, null);
 
             if (initQueryCursor.getCount() == 0 || initQueryCursor == null){
-                // Init task. Populates DB with quotes for the symbols seen below
-                try {
-                  urlStringBuilder.append(
-                      URLEncoder.encode("\"YHOO\",\"AAPL\",\"GOOG\",\"MSFT\")", "UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                  e.printStackTrace();
-                }
+                urlStringBuilder.append(INIT_STOCKS);
+
             } else if (initQueryCursor != null){
                 DatabaseUtils.dumpCursor(initQueryCursor);
                 initQueryCursor.moveToFirst();
                 for (int i = 0; i < initQueryCursor.getCount(); i++){
                     mStoredSymbols.append("\"" +
-                            initQueryCursor.getString(initQueryCursor.getColumnIndex("symbol"))+"\",");
+                            initQueryCursor.getString(initQueryCursor.getColumnIndex("symbol")) +
+                            "\",");
                     initQueryCursor.moveToNext();
                 }
-                mStoredSymbols.replace(mStoredSymbols.length() - 1, mStoredSymbols.length(), ")");
-                try {
-                    urlStringBuilder.append(URLEncoder.encode(mStoredSymbols.toString(), "UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                initQueryCursor.close();
+                mStoredSymbols.deleteCharAt(mStoredSymbols.length() - 1);
+                urlStringBuilder.append(mStoredSymbols.toString());
             }
         } else if (params.getTag().equals(StockIntentService.ACTION_ADD)){
             isUpdate = false;
-            // get symbol from params.getExtra and build query
             String stockInput = params.getExtras().getString(StockIntentService.EXTRA_SYMBOL);
-            try {
-                urlStringBuilder.append(URLEncoder.encode("\""+stockInput+"\")", "UTF-8"));
-            } catch (UnsupportedEncodingException e){
-                e.printStackTrace();
-            }
+            urlStringBuilder.append("\"" + stockInput + "\"");
         }
-        // finalize the URL for the API query.
-        urlStringBuilder.append("&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables." +
-                "org%2Falltableswithkeys&callback=");
 
-        String urlString;
-        String getResponse;
-        int result = GcmNetworkManager.RESULT_FAILURE;
-
-        if (urlStringBuilder != null){
-            urlString = urlStringBuilder.toString();
-            try{
-                getResponse = fetchData(urlString);
-                result = GcmNetworkManager.RESULT_SUCCESS;
-
-                try {
-                    ContentValues contentValues = new ContentValues();
-                    // update ISCURRENT to 0 (false) so new data is current
-                    if (isUpdate){
-                        contentValues.put(QuoteColumns.ISCURRENT, 0);
-                        mContext.getContentResolver().update(QuoteProvider.Quotes.CONTENT_URI,
-                                contentValues, null, null);
-                    }
-                    mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
-                    Utils.quoteJsonToContentVals(getResponse));
-                }catch (RemoteException | OperationApplicationException e){
-                    Log.e(LOG_TAG, "Error applying batch insert", e);
-                }
-            } catch (IOException e){
-                e.printStackTrace();
-            }
-        }
-        return result;
+        Log.d(LOG_TAG, urlStringBuilder.toString());
+        return "select * from yahoo.finance.quotes where symbol in (" +
+                urlStringBuilder.toString() + ")";
     }
 }
