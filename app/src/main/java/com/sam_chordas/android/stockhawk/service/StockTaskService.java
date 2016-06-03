@@ -6,6 +6,7 @@ import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.RemoteException;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -22,7 +23,6 @@ import com.sam_chordas.android.stockhawk.data.models.Quote;
 import com.sam_chordas.android.stockhawk.data.models.StockResult;
 import com.sam_chordas.android.stockhawk.data.models.StocksResult;
 import com.sam_chordas.android.stockhawk.rest.Utils;
-import com.squareup.okhttp.OkHttpClient;;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +42,6 @@ public class StockTaskService extends GcmTaskService{
     private static final String LOG_TAG = StockTaskService.class.getSimpleName();
     private static final String INIT_STOCKS = "\"YHOO\",\"AAPL\",\"GOOG\",\"MSFT\"";
 
-    private OkHttpClient client = new OkHttpClient();
     private Context mContext;
     private StringBuilder mStoredSymbols = new StringBuilder();
     private boolean isUpdate;
@@ -116,17 +115,13 @@ public class StockTaskService extends GcmTaskService{
 
         @Override
         public void onResponse(Call<StockResult> call, Response<StockResult> response) {
-            Quote quote = response.body().getQuote();
-            if (quote != null) {
-                List<Quote> quoteList = Arrays.asList(quote);
-                try {
-                    mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
-                            Utils.quoteJsonToContentVals(quoteList));
-                } catch (RemoteException | OperationApplicationException | NullPointerException e) {
-                    String msg = mContext.getString(R.string.non_existent_stock_symbol);
-                    Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
-                }
-
+            try {
+                mContext.getContentResolver()
+                        .applyBatch(QuoteProvider.AUTHORITY,
+                            Utils.quoteJsonToContentVals(Arrays.asList(response.body().getQuote())));
+            } catch (RemoteException | OperationApplicationException | NullPointerException e) {
+                String msg = mContext.getString(R.string.non_existent_stock_symbol);
+                Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
             }
         }
 
