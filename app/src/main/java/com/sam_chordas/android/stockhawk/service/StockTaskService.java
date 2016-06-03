@@ -1,19 +1,31 @@
 package com.sam_chordas.android.stockhawk.service;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.os.RemoteException;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
 
+import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.data.models.IYahooStockQuotesAPI;
-import com.sam_chordas.android.stockhawk.data.models.Query;
 
+import com.sam_chordas.android.stockhawk.data.models.Quote;
+import com.sam_chordas.android.stockhawk.data.models.StockResult;
+import com.sam_chordas.android.stockhawk.data.models.StocksResult;
+import com.sam_chordas.android.stockhawk.rest.Utils;
 import com.squareup.okhttp.OkHttpClient;;
+
+import java.util.Arrays;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,46 +47,39 @@ public class StockTaskService extends GcmTaskService{
     private StringBuilder mStoredSymbols = new StringBuilder();
     private boolean isUpdate;
     private IYahooStockQuotesAPI yahooStockQuotesAPI;
-    private Call<Query> stockQuotesQuery;
 
     public StockTaskService(){}
 
     public StockTaskService(Context context){
         mContext = context;
-    }
-
-    @Override
-    public int onRunTask(TaskParams params) {
-        if (mContext == null) {
-            mContext = this;
-        }
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(IYahooStockQuotesAPI.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-
         yahooStockQuotesAPI = retrofit.create(IYahooStockQuotesAPI.class);
-        stockQuotesQuery = yahooStockQuotesAPI.getStocks(getQuery(params));
-        stockQuotesQuery.enqueue(new Callback<Query>() {
-            @Override
-            public void onResponse(Call<Query> call, Response<Query> response) {
-                // TODO: Store data
-            }
+    }
 
-            @Override
-            public void onFailure(Call<Query> call, Throwable t) {
-                // TODO: Handling failure
-                Log.d(LOG_TAG, t.getMessage());
-            }
-        });
-        return 1;
+    @Override
+    public int onRunTask(final TaskParams params) {
+        if (mContext == null) {
+            mContext = this;
+        }
+        if (params.getTag().equals(StockIntentService.ACTION_INIT)){
+            Call<StocksResult> stockQuotesQuery = yahooStockQuotesAPI.getStocks(getQuery(params));
+            stockQuotesQuery.enqueue(new StockQuotesCallBack());
+        } else {
+            Call<StockResult> stockQuoteQuery = yahooStockQuotesAPI.getStock(getQuery(params));
+            stockQuoteQuery.enqueue(new StockQuoteCallBack());
+        }
+        return GcmNetworkManager.RESULT_SUCCESS;
     }
 
     private String getQuery(TaskParams params){
         final StringBuilder urlStringBuilder = new StringBuilder();
         Cursor initQueryCursor;
-        if (params.getTag().equals("init") || params.getTag().equals("periodic")){
+        if (params.getTag().equals(StockIntentService.ACTION_INIT) ||
+                params.getTag().equals("periodic")){
             isUpdate = true;
             initQueryCursor = mContext.getContentResolver()
                     .query(QuoteProvider.Quotes.CONTENT_URI,
@@ -86,10 +91,10 @@ public class StockTaskService extends GcmTaskService{
             } else if (initQueryCursor != null){
                 DatabaseUtils.dumpCursor(initQueryCursor);
                 initQueryCursor.moveToFirst();
+                String symbol;
                 for (int i = 0; i < initQueryCursor.getCount(); i++){
-                    mStoredSymbols.append("\"" +
-                            initQueryCursor.getString(initQueryCursor.getColumnIndex("symbol")) +
-                            "\",");
+                    symbol = initQueryCursor.getString(initQueryCursor.getColumnIndex("symbol"));
+                    mStoredSymbols.append("\"" + symbol + "\",");
                     initQueryCursor.moveToNext();
                 }
                 initQueryCursor.close();
@@ -105,5 +110,54 @@ public class StockTaskService extends GcmTaskService{
         Log.d(LOG_TAG, urlStringBuilder.toString());
         return "select * from yahoo.finance.quotes where symbol in (" +
                 urlStringBuilder.toString() + ")";
+    }
+
+    private class StockQuoteCallBack implements Callback<StockResult> {
+
+        @Override
+        public void onResponse(Call<StockResult> call, Response<StockResult> response) {
+            Quote quote = response.body().getQuote();
+            if (quote != null) {
+                List<Quote> quoteList = Arrays.asList(quote);
+                try {
+                    mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
+                            Utils.quoteJsonToContentVals(quoteList));
+                } catch (RemoteException | OperationApplicationException | NullPointerException e) {
+                    String msg = mContext.getString(R.string.non_existent_stock_symbol);
+                    Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+                }
+
+            }
+        }
+
+        @Override
+        public void onFailure(Call<StockResult> call, Throwable t) {
+
+        }
+    }
+
+    private class StockQuotesCallBack implements Callback<StocksResult> {
+
+        @Override
+        public void onResponse(Call<StocksResult> call, Response<StocksResult> response) {
+            ContentValues contentValues = new ContentValues();
+            // update ISCURRENT to 0 (false) so new data is current
+            if (isUpdate){
+                contentValues.put(QuoteColumns.ISCURRENT, 0);
+                mContext.getContentResolver().update(QuoteProvider.Quotes.CONTENT_URI, contentValues,
+                        null, null);
+            }
+            try {
+                mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
+                        Utils.quoteJsonToContentVals(response.body().getQuotes()));
+            } catch (RemoteException | OperationApplicationException e){
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onFailure(Call<StocksResult> call, Throwable t) {
+
+        }
     }
 }
