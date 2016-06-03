@@ -12,5 +12,10 @@ public interface IYahooStockQuotesAPI {
     @GET("/v1/public/yql?" +
             "format=json&diagnostics=true&" +
             "env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=")
-    Call<com.sam_chordas.android.stockhawk.data.models.Query> getStocks(@Query("q") String query);
+    Call<StocksResult> getStocks(@Query("q") String query);
+
+    @GET("/v1/public/yql?" +
+            "format=json&diagnostics=true&" +
+            "env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=")
+    Call<StockResult> getStock(@Query("q") String query);
 }
