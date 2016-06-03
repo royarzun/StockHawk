@@ -8,12 +8,14 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,6 +51,8 @@ public class MyStocksActivity extends AppCompatActivity implements
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.fab) FloatingActionButton fab;
     @Bind(R.id.recycler_view) RecyclerView recyclerView;
+    @Bind(R.id.coordinator_layout) CoordinatorLayout coordinatorLayout;
+    @Bind(R.id.empty_recycler_view_msg) View mEmptyView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,9 +100,7 @@ public class MyStocksActivity extends AppCompatActivity implements
                             new MaterialDialog.InputCallback() {
                                 @Override
                                 public void onInput(MaterialDialog dialog, CharSequence input) {
-                                    // On FAB click, receive user input. Make sure the stock doesn't
-                                    // already exist in the DB and proceed accordingly
-                                    addQuoteOrFailGracefully(input.toString());
+                                    addQuoteOrNotify(input.toString());
                                 }
                             })
                     .show();
@@ -107,31 +109,39 @@ public class MyStocksActivity extends AppCompatActivity implements
         }
     }
 
-    private void addQuoteOrFailGracefully(String input){
-        Cursor c = getContentResolver()
-                .query(QuoteProvider.Quotes.CONTENT_URI,
-                        new String[] {
-                                QuoteColumns.SYMBOL
-                        }, QuoteColumns.SYMBOL + "= ?",
-                        new String[] {
-                                input
-                        }, null);
-        if (c != null && c.getCount() != 0) {
-            Toast toast = Toast.makeText(getApplicationContext(),
-                    "This stock is already saved!", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
-            toast.show();
-            c.close();
-            return;
-        } else {
-            // Add the stock to DB
-            Intent mServiceIntent = new Intent(getApplicationContext(),
-                    StockIntentService.class);
-            mServiceIntent.putExtra(StockIntentService.EXTRA_TAG,
-                    StockIntentService.ACTION_ADD);
-            mServiceIntent.putExtra(StockIntentService.EXTRA_SYMBOL, input);
-            startService(mServiceIntent);
-        }
+    private void addQuoteOrNotify(final String quote){
+        new AsyncTask<Void, Void, Boolean>() {
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                Cursor cursor = getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
+                        new String[]{QuoteColumns.SYMBOL},
+                        QuoteColumns.SYMBOL + "= ?",
+                        new String[]{quote},
+                        null);
+                if (cursor != null) {
+                    cursor.close();
+                    return cursor.getCount() != 0;
+                }
+                return Boolean.FALSE;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean stockAlreadySaved) {
+                if (stockAlreadySaved) {
+                    Snackbar.make(coordinatorLayout,
+                            R.string.stock_already_in_database,
+                            Snackbar.LENGTH_LONG).show();
+                } else {
+                    Intent stockIntentService = new Intent(MyStocksActivity.this,
+                            StockIntentService.class);
+                    stockIntentService.putExtra(StockIntentService.EXTRA_TAG,
+                            StockIntentService.ACTION_ADD);
+                    stockIntentService.putExtra(StockIntentService.EXTRA_SYMBOL, quote);
+                    startService(stockIntentService);
+                }
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
@@ -175,6 +185,8 @@ public class MyStocksActivity extends AppCompatActivity implements
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
+
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // This narrows the return to only the stocks that are most current.
@@ -196,6 +208,7 @@ public class MyStocksActivity extends AppCompatActivity implements
         if (mCursorAdapter != null){
             mCursorAdapter.swapCursor(data);
         }
+        mEmptyView.setVisibility(data == null ? View.VISIBLE : View.GONE);
     }
 
     @Override

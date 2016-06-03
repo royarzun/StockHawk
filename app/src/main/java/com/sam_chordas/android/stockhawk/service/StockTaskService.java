@@ -6,7 +6,6 @@ import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.RemoteException;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,13 +18,11 @@ import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.data.models.IYahooStockQuotesAPI;
 
-import com.sam_chordas.android.stockhawk.data.models.Quote;
 import com.sam_chordas.android.stockhawk.data.models.StockResult;
 import com.sam_chordas.android.stockhawk.data.models.StocksResult;
 import com.sam_chordas.android.stockhawk.rest.Utils;
 
 import java.util.Arrays;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
