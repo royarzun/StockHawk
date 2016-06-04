@@ -56,6 +56,7 @@ public class Utils {
 
         String change = quote.getChange();
         builder.withValue(QuoteColumns.SYMBOL, quote.getSymbol());
+        builder.withValue(QuoteColumns.NAME, quote.getName());
         builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(quote.getBid()));
         builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
                 quote.getChangeInPercent(), true));
