@@ -41,7 +41,7 @@ public class StockTaskService extends GcmTaskService{
 
     private Context mContext;
     private StringBuilder mStoredSymbols = new StringBuilder();
-    private boolean isUpdate;
+    private boolean isUpdate = false;
     private IYahooStockQuotesAPI yahooStockQuotesAPI;
 
     public StockTaskService(){}
@@ -79,10 +79,11 @@ public class StockTaskService extends GcmTaskService{
             isUpdate = true;
             initQueryCursor = mContext.getContentResolver()
                     .query(QuoteProvider.Quotes.CONTENT_URI,
-                    new String[] { "Distinct " + QuoteColumns.SYMBOL }, null, null, null);
+                            new String[] { "Distinct " + QuoteColumns.SYMBOL }, null, null, null);
 
-            if (initQueryCursor.getCount() == 0 || initQueryCursor == null){
+            if (initQueryCursor == null || initQueryCursor.getCount() == 0){
                 urlStringBuilder.append(INIT_STOCKS);
+                isUpdate = false;
 
             } else if (initQueryCursor != null){
                 DatabaseUtils.dumpCursor(initQueryCursor);
@@ -104,6 +105,7 @@ public class StockTaskService extends GcmTaskService{
         }
 
         Log.d(LOG_TAG, urlStringBuilder.toString());
+        Log.d(LOG_TAG, "is it an update??? : " + String.valueOf(isUpdate));
         return "select * from yahoo.finance.quotes where symbol in (" +
                 urlStringBuilder.toString() + ")";
     }

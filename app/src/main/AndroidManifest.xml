@@ -42,7 +42,7 @@
 
         <provider
             android:name=".data.generated.QuoteProvider"
-            android:authorities=".data.QuoteProvider"
+            android:authorities="com.sam_chordas.android.stockhawk.data.QuoteProvider"
             android:exported="false"/>
 
         <activity android:name=".ui.MyStockDetail"/>

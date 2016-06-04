@@ -50,7 +50,7 @@ public class Utils {
         return change;
     }
 
-    public static ContentProviderOperation buildBatchOperation(Quote quote){
+    private static ContentProviderOperation buildBatchOperation(Quote quote){
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
             QuoteProvider.Quotes.CONTENT_URI);
 
