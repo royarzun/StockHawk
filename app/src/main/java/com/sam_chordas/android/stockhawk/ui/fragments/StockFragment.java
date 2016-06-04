@@ -4,13 +4,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import butterknife.ButterKnife;
+import butterknife.Bind;
 
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
@@ -18,11 +24,14 @@ import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 
 
 public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
-    private static final String ARG_SYMBOL = "symbol";
+    private static final String LOG_TAG = StockFragment.class.getSimpleName();
+    public static final String ARG_SYMBOL = "symbol";
 
     private static final int QUOTE_LOADER_ID = 200;
 
     private String mSymbol;
+
+    @Bind(R.id.detail_collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
 
     private OnFragmentInteractionListener mListener;
 
@@ -50,24 +59,20 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_stock, container, false);
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+        View rootView = inflater.inflate(R.layout.fragment_stock, container, false);
+        ButterKnife.bind(this, rootView);
+        return rootView;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        /*if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(LOG_TAG, "onResume");
     }
 
     @Override
@@ -97,7 +102,13 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+        switch (loader.getId()){
+            case QUOTE_LOADER_ID:
+                data.moveToFirst();
+                collapsingToolbarLayout.setTitle(data.getString(
+                        data.getColumnIndex(QuoteColumns.SYMBOL)));
+                break;
+        }
     }
 
     @Override

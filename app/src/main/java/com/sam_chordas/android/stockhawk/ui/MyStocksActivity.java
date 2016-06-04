@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,10 +36,12 @@ import com.sam_chordas.android.stockhawk.rest.QuoteCursorAdapter;
 import com.sam_chordas.android.stockhawk.rest.RecyclerViewItemClickListener;
 import com.sam_chordas.android.stockhawk.rest.Utils;
 import com.sam_chordas.android.stockhawk.service.StockIntentService;
+import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
+import com.sam_chordas.android.stockhawk.ui.fragments.StockFragment;
 
 
 public class MyStocksActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, RecyclerViewItemClickListener.OnItemClickListener {
 
     /**
     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -78,15 +81,14 @@ public class MyStocksActivity extends AppCompatActivity implements
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mCursorAdapter = new QuoteCursorAdapter(this, null);
 
-        recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(this,
-                new RecyclerViewItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View v, int position) {
-
-                    }
-                }));
         recyclerView.setAdapter(mCursorAdapter);
         fab.attachToRecyclerView(recyclerView);
+        recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(this, this));
+
+        //ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mCursorAdapter);
+        //ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        //itemTouchHelper.attachToRecyclerView(recyclerView);
+
     }
 
     @SuppressWarnings("unused")
@@ -216,4 +218,10 @@ public class MyStocksActivity extends AppCompatActivity implements
         mCursorAdapter.swapCursor(null);
     }
 
+    @Override
+    public void onItemClick(View v, int position) {
+        Intent intent = new Intent(this, MyStockDetail.class);
+        intent.putExtra(StockFragment.ARG_SYMBOL, mCursorAdapter.getSymbol(position));
+        startActivity(intent);
+    }
 }
