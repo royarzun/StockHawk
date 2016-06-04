@@ -20,8 +20,8 @@ public class MyStockDetail extends AppCompatActivity {
         }
 
         if (savedInstanceState == null) {
-            StockFragment fragment = StockFragment.newInstance(getIntent().getStringExtra(
-                    StockFragment.ARG_SYMBOL));
+            StockFragment fragment = StockFragment.newInstance(
+                    getIntent().getStringExtra(StockFragment.ARG_SYMBOL));
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.stock_detail_fragment, fragment)
                     .commit();

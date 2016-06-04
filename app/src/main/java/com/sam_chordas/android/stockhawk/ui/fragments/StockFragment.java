@@ -32,6 +32,10 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
     private String mSymbol;
 
     @Bind(R.id.detail_collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
+    @Bind(R.id.detail_stock_symbol) TextView stockSymbolTV;
+    @Bind(R.id.detail_stock_name) TextView stockNameTV;
+    @Bind(R.id.detail_stock_bid_price) TextView stockBidPriceTV;
+    @Bind(R.id.detail_stock_change) TextView stockChangeTV;
 
     private OnFragmentInteractionListener mListener;
 
@@ -58,7 +62,6 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_stock, container, false);
         ButterKnife.bind(this, rootView);
         return rootView;
@@ -88,6 +91,7 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
                 String[] quoteColumns = new String[]{
                         QuoteColumns._ID,
                         QuoteColumns.SYMBOL,
+                        QuoteColumns.NAME,
                         QuoteColumns.BIDPRICE,
                         QuoteColumns.PERCENT_CHANGE,
                         QuoteColumns.CHANGE,
@@ -107,6 +111,14 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
                 data.moveToFirst();
                 collapsingToolbarLayout.setTitle(data.getString(
                         data.getColumnIndex(QuoteColumns.SYMBOL)));
+                stockSymbolTV.setText(data.getString(
+                        data.getColumnIndex(QuoteColumns.SYMBOL)));
+                stockNameTV.setText(data.getString(
+                        data.getColumnIndex(QuoteColumns.NAME)));
+                stockBidPriceTV.setText(data.getString(
+                        data.getColumnIndex(QuoteColumns.BIDPRICE)));
+                stockChangeTV.setText(data.getString(
+                        data.getColumnIndex(QuoteColumns.CHANGE)));
                 break;
         }
     }
