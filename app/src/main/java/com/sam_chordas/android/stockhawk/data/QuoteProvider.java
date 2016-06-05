@@ -11,39 +11,52 @@ import net.simonvt.schematic.annotation.TableEndpoint;
  */
 @ContentProvider(authority = QuoteProvider.AUTHORITY, database = QuoteDatabase.class)
 public class QuoteProvider {
-  public static final String AUTHORITY = "com.sam_chordas.android.stockhawk.data.QuoteProvider";
+    public static final String AUTHORITY = "com.sam_chordas.android.stockhawk.data.QuoteProvider";
 
-  static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
-  interface Path{
-    String QUOTES = "quotes";
-  }
-
-  private static Uri buildUri(String... paths){
-    Uri.Builder builder = BASE_CONTENT_URI.buildUpon();
-    for (String path:paths){
-      builder.appendPath(path);
+    interface Path{
+        String QUOTES = "quotes";
+        String QUOTES_HISTORIC = "quotes_historical";
     }
-    return builder.build();
-  }
 
-  @TableEndpoint(table = QuoteDatabase.QUOTES)
-  public static class Quotes{
-    @ContentUri(
-        path = Path.QUOTES,
-        type = "vnd.android.cursor.dir/quote"
-    )
-    public static final Uri CONTENT_URI = buildUri(Path.QUOTES);
+    private static Uri buildUri(String... paths){
+        Uri.Builder builder = BASE_CONTENT_URI.buildUpon();
+            for (String path:paths){
+                builder.appendPath(path);
+            }
+        return builder.build();
+    }
 
-    @InexactContentUri(
-        name = "QUOTE_ID",
-        path = Path.QUOTES + "/*",
-        type = "vnd.android.cursor.item/quote",
-        whereColumn = QuoteColumns.SYMBOL,
-        pathSegment = 1
-    )
-    public static Uri withSymbol(String symbol){
+    @TableEndpoint(table = QuoteDatabase.QUOTES)
+    public static class Quotes{
+        @ContentUri(
+            path = Path.QUOTES,
+            type = "vnd.android.cursor.dir/quote"
+        )
+
+        public static final Uri CONTENT_URI = buildUri(Path.QUOTES);
+
+        @InexactContentUri(
+            name = "QUOTE_ID",
+            path = Path.QUOTES + "/*",
+            type = "vnd.android.cursor.item/quote",
+            whereColumn = QuoteColumns.SYMBOL,
+            pathSegment = 1
+        )
+
+        public static Uri withSymbol(String symbol){
       return buildUri(Path.QUOTES, symbol);
     }
-  }
+    }
+
+    @TableEndpoint(table = QuoteDatabase.QUOTES_HISTORICAL)
+    public static class QuotesHistoricData {
+        @ContentUri(
+                path = Path.QUOTES_HISTORIC,
+                type = "vnd.android.cursor.dir/quote_historical_data"
+        )
+
+        public static final Uri CONTENT_URI = buildUri(Path.QUOTES_HISTORIC);
+    }
 }
