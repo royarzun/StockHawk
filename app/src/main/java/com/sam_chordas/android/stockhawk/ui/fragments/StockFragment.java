@@ -18,9 +18,16 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
+
+import java.util.ArrayList;
 
 
 public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
@@ -31,11 +38,11 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
 
     private String mSymbol;
 
-    @Bind(R.id.detail_collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
     @Bind(R.id.detail_stock_symbol) TextView stockSymbolTV;
     @Bind(R.id.detail_stock_name) TextView stockNameTV;
     @Bind(R.id.detail_stock_bid_price) TextView stockBidPriceTV;
     @Bind(R.id.detail_stock_change) TextView stockChangeTV;
+    @Bind(R.id.detail_stock_hist_chart) LineChart stockHistoricChartLC;
 
     private OnFragmentInteractionListener mListener;
 
@@ -109,8 +116,6 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
         switch (loader.getId()){
             case QUOTE_LOADER_ID:
                 data.moveToFirst();
-                collapsingToolbarLayout.setTitle(data.getString(
-                        data.getColumnIndex(QuoteColumns.SYMBOL)));
                 stockSymbolTV.setText(data.getString(
                         data.getColumnIndex(QuoteColumns.SYMBOL)));
                 stockNameTV.setText(data.getString(
@@ -119,6 +124,23 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
                         data.getColumnIndex(QuoteColumns.BIDPRICE)));
                 stockChangeTV.setText(data.getString(
                         data.getColumnIndex(QuoteColumns.CHANGE)));
+
+                ArrayList<Entry> entries = new ArrayList<>();
+                entries.add(new Entry(4f, 0));
+                entries.add(new Entry(8f, 1));
+                entries.add(new Entry(6f, 2));
+                entries.add(new Entry(12f, 3));
+                entries.add(new Entry(18f, 4));
+                entries.add(new Entry(9f, 5));
+                LineDataSet dataSet = new LineDataSet(entries, "Stock Price over time");
+                ArrayList<String> labels = new ArrayList<String>();
+                labels.add("January");
+                labels.add("February");
+                labels.add("March");
+                labels.add("April");
+                labels.add("May");
+                labels.add("June");
+                stockHistoricChartLC.setData(new LineData(labels, dataSet));
                 break;
         }
     }
