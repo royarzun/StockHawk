@@ -8,9 +8,6 @@ public class QuoteHistorical {
     @SerializedName("Symbol")
     public String mSymbol;
 
-    @SerializedName("Name")
-    public String mName;
-
     @SerializedName("Close")
     public String mBid;
 

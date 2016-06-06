@@ -18,4 +18,9 @@ public interface IYahooStockQuotesAPI {
             "format=json&diagnostics=true&" +
             "env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=")
     Call<StockResult> getStock(@Query("q") String query);
+
+    @GET("/v1/public/yql?" +
+            "format=json&diagnostics=true&" +
+            "env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=")
+    Call<StocksHistoricalResult> getStocksHistorical(@Query("q") String query);
 }

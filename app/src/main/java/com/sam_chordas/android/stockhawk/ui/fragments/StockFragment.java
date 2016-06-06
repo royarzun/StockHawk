@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
@@ -19,12 +18,12 @@ import butterknife.ButterKnife;
 import butterknife.Bind;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
+import com.sam_chordas.android.stockhawk.data.QuoteHistoricalColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 
 import java.util.ArrayList;
@@ -35,6 +34,7 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
     public static final String ARG_SYMBOL = "symbol";
 
     private static final int QUOTE_LOADER_ID = 200;
+    private static final int QUOTE_HISTORICAL_ID = 201;
 
     private String mSymbol;
 
@@ -64,6 +64,7 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
             mSymbol = getArguments().getString(ARG_SYMBOL);
         }
         getLoaderManager().initLoader(QUOTE_LOADER_ID, null, this);
+        getLoaderManager().initLoader(QUOTE_HISTORICAL_ID, null, this);
     }
 
     @Override
@@ -107,6 +108,17 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
                 return new CursorLoader(getActivity(),
                         QuoteProvider.Quotes.CONTENT_URI,
                         quoteColumns, selectQuoteArgs, null, null);
+            case QUOTE_HISTORICAL_ID:
+                String[] columnsIds = new String[]{
+                        QuoteHistoricalColumns._ID,
+                        QuoteHistoricalColumns.SYMBOL,
+                        QuoteHistoricalColumns.BIDPRICE,
+                        QuoteHistoricalColumns.DATE
+                };
+                return new CursorLoader(getActivity(),
+                        QuoteProvider.QuotesHistoricData.CONTENT_URI,
+                        columnsIds, QuoteHistoricalColumns.SYMBOL + " =\"" + mSymbol + "\"",
+                        null, "DATE ASC LIMIT 20");
         }
         return null;
     }
@@ -115,34 +127,43 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         switch (loader.getId()){
             case QUOTE_LOADER_ID:
-                data.moveToFirst();
-                stockSymbolTV.setText(data.getString(
-                        data.getColumnIndex(QuoteColumns.SYMBOL)));
-                stockNameTV.setText(data.getString(
-                        data.getColumnIndex(QuoteColumns.NAME)));
-                stockBidPriceTV.setText(data.getString(
-                        data.getColumnIndex(QuoteColumns.BIDPRICE)));
-                stockChangeTV.setText(data.getString(
-                        data.getColumnIndex(QuoteColumns.CHANGE)));
+                if (data.moveToFirst()) {
+                    stockSymbolTV.setText(data.getString(
+                            data.getColumnIndex(QuoteColumns.SYMBOL)));
+                    stockNameTV.setText(data.getString(
+                            data.getColumnIndex(QuoteColumns.NAME)));
+                    stockBidPriceTV.setText(data.getString(
+                            data.getColumnIndex(QuoteColumns.BIDPRICE)));
+                    stockChangeTV.setText(data.getString(
+                            data.getColumnIndex(QuoteColumns.CHANGE)));
 
-                ArrayList<Entry> entries = new ArrayList<>();
-                entries.add(new Entry(4f, 0));
-                entries.add(new Entry(8f, 1));
-                entries.add(new Entry(6f, 2));
-                entries.add(new Entry(12f, 3));
-                entries.add(new Entry(18f, 4));
-                entries.add(new Entry(9f, 5));
-                LineDataSet dataSet = new LineDataSet(entries, "Stock Price over time");
-                ArrayList<String> labels = new ArrayList<String>();
-                labels.add("January");
-                labels.add("February");
-                labels.add("March");
-                labels.add("April");
-                labels.add("May");
-                labels.add("June");
-                stockHistoricChartLC.setData(new LineData(labels, dataSet));
+                }
                 break;
+            case QUOTE_HISTORICAL_ID:
+                if (data.moveToFirst()) {
+                    stockHistoricChartLC.setData(getChartData(data));
+                    break;
+                }
         }
+    }
+
+    private LineData getChartData(Cursor historicDataCursor) {
+        int count = 0;
+        ArrayList<Entry> entries = new ArrayList<>();
+        ArrayList<String> labels = new ArrayList<>();
+
+        while (historicDataCursor.moveToNext()){
+            Float price = Float.valueOf(historicDataCursor.getString(
+                    historicDataCursor.getColumnIndex(QuoteHistoricalColumns.BIDPRICE)));
+            String date = historicDataCursor.getString(
+                    historicDataCursor.getColumnIndex(QuoteHistoricalColumns.DATE));
+            entries.add(new Entry(price, count));
+            labels.add(date);
+            count++;
+        }
+
+        LineDataSet dataSet = new LineDataSet(entries, "Stock Price over time");
+        return new LineData(labels, dataSet);
     }
 
     @Override

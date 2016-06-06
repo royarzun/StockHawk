@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteConstraintException;
 import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
@@ -18,11 +19,17 @@ import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.data.models.IYahooStockQuotesAPI;
 
+import com.sam_chordas.android.stockhawk.data.models.Quote;
 import com.sam_chordas.android.stockhawk.data.models.StockResult;
+import com.sam_chordas.android.stockhawk.data.models.StocksHistoricalResult;
 import com.sam_chordas.android.stockhawk.data.models.StocksResult;
 import com.sam_chordas.android.stockhawk.rest.Utils;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -79,19 +86,20 @@ public class StockTaskService extends GcmTaskService{
             isUpdate = true;
             initQueryCursor = mContext.getContentResolver()
                     .query(QuoteProvider.Quotes.CONTENT_URI,
-                            new String[] { "Distinct " + QuoteColumns.SYMBOL }, null, null, null);
+                            new String[] { "Distinct " + QuoteColumns.SYMBOL },
+                            null, null, null);
 
             if (initQueryCursor == null || initQueryCursor.getCount() == 0){
                 urlStringBuilder.append(INIT_STOCKS);
                 isUpdate = false;
 
-            } else if (initQueryCursor != null){
+            } else {
                 DatabaseUtils.dumpCursor(initQueryCursor);
                 initQueryCursor.moveToFirst();
                 String symbol;
                 for (int i = 0; i < initQueryCursor.getCount(); i++){
                     symbol = initQueryCursor.getString(initQueryCursor.getColumnIndex("symbol"));
-                    mStoredSymbols.append("\"" + symbol + "\",");
+                    mStoredSymbols.append(putStringSymbol(symbol) + ",");
                     initQueryCursor.moveToNext();
                 }
                 initQueryCursor.close();
@@ -101,13 +109,39 @@ public class StockTaskService extends GcmTaskService{
         } else if (params.getTag().equals(StockIntentService.ACTION_ADD)){
             isUpdate = false;
             String stockInput = params.getExtras().getString(StockIntentService.EXTRA_SYMBOL);
-            urlStringBuilder.append("\"" + stockInput + "\"");
+            urlStringBuilder.append(putStringSymbol(stockInput));
         }
 
         Log.d(LOG_TAG, urlStringBuilder.toString());
         Log.d(LOG_TAG, "is it an update??? : " + String.valueOf(isUpdate));
         return "select * from yahoo.finance.quotes where symbol in (" +
                 urlStringBuilder.toString() + ")";
+    }
+
+    private String getHistoricalQuery(Quote quote) {
+        // Load historic stock data
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Date currentDate = new Date();
+
+        Calendar calEnd = Calendar.getInstance();
+        calEnd.setTime(currentDate);
+        calEnd.add(Calendar.DATE, 0);
+
+        Calendar calStart = Calendar.getInstance();
+        calStart.setTime(currentDate);
+        calStart.add(Calendar.MONTH, -1);
+
+        String startDate = dateFormat.format(calStart.getTime());
+        String endDate = dateFormat.format(calEnd.getTime());
+
+        String query = "select * from yahoo.finance.historicaldata where symbol=\"" +
+                quote.getSymbol() +
+                "\" and startDate=\"" + startDate + "\" and endDate=\"" + endDate + "\"";
+        return query;
+    }
+
+    private String putStringSymbol(String symbol) {
+        return "\"" + symbol + "\"";
     }
 
     private class StockQuoteCallBack implements Callback<StockResult> {
@@ -144,6 +178,30 @@ public class StockTaskService extends GcmTaskService{
             try {
                 mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
                         Utils.quoteJsonToContentVals(response.body().getQuotes()));
+
+                for (Quote quote: response.body().getQuotes()) {
+                    Call<StocksHistoricalResult> qHistorilcalQuery = yahooStockQuotesAPI
+                            .getStocksHistorical(getHistoricalQuery(quote));
+                    qHistorilcalQuery.enqueue(new Callback<StocksHistoricalResult>() {
+                        @Override
+                        public void onResponse(Call<StocksHistoricalResult> call, Response<StocksHistoricalResult> response) {
+
+                            try {
+                                mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
+                                                Utils.quoteHistoricalToContentValues(response.body().getQuotes()));
+                            } catch (RemoteException| OperationApplicationException e) {
+                                e.printStackTrace();
+                            } catch (SQLiteConstraintException e){
+                                // Dont do anything!
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<StocksHistoricalResult> call, Throwable t) {
+                        }
+                    });
+
+                }
             } catch (RemoteException | OperationApplicationException e){
                 e.printStackTrace();
             }
