@@ -78,6 +78,7 @@ public class MyStocksActivity extends AppCompatActivity implements
             }
         }
 
+        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mCursorAdapter = new QuoteCursorAdapter(this, null);
 
@@ -149,7 +150,6 @@ public class MyStocksActivity extends AppCompatActivity implements
     @Override
     public void onResume() {
         super.onResume();
-        getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
     }
 
     public void networkToast(){
@@ -186,8 +186,6 @@ public class MyStocksActivity extends AppCompatActivity implements
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
-
-
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
