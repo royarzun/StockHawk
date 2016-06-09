@@ -195,7 +195,8 @@ public class MyStocksActivity extends AppCompatActivity implements
                 QuoteColumns.SYMBOL,
                 QuoteColumns.BIDPRICE,
                 QuoteColumns.PERCENT_CHANGE,
-                QuoteColumns.CHANGE, QuoteColumns.ISUP
+                QuoteColumns.CHANGE,
+                QuoteColumns.ISUP
         };
         return new CursorLoader(this, QuoteProvider.Quotes.CONTENT_URI, columnsIds,
                 QuoteColumns.ISCURRENT + " = ?",

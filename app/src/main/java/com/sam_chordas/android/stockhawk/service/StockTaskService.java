@@ -2,6 +2,7 @@ package com.sam_chordas.android.stockhawk.service;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -45,6 +46,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class StockTaskService extends GcmTaskService{
     private static final String LOG_TAG = StockTaskService.class.getSimpleName();
     private static final String INIT_STOCKS = "\"YHOO\",\"AAPL\",\"GOOG\",\"MSFT\"";
+    public static final String ACTION_DATA = "com.sam_chordas.android.stockhawk.app.ACTION_DATA_UPDATED";
 
     private Context mContext;
     private StringBuilder mStoredSymbols = new StringBuilder();
@@ -75,6 +77,7 @@ public class StockTaskService extends GcmTaskService{
             Call<StockResult> stockQuoteQuery = yahooStockQuotesAPI.getStock(getQuery(params));
             stockQuoteQuery.enqueue(new StockQuoteCallBack());
         }
+        updateWidgets();
         return GcmNetworkManager.RESULT_SUCCESS;
     }
 
@@ -142,6 +145,12 @@ public class StockTaskService extends GcmTaskService{
 
     private String putStringSymbol(String symbol) {
         return "\"" + symbol + "\"";
+    }
+
+    private void updateWidgets() {
+        // Setting the package ensures that only components in our app will receive the broadcast
+        Intent dataUpdatedIntent = new Intent(ACTION_DATA).setPackage(mContext.getPackageName());
+        mContext.sendBroadcast(dataUpdatedIntent);
     }
 
     private class StockQuoteCallBack implements Callback<StockResult> {

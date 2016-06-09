@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sam_chordas.android.stockhawk">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.sam_chordas.android.stockhawk">
 
     <application
         android:allowBackup="true"
@@ -9,7 +8,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
         <uses-permission android:name="android.permission.INTERNET"/>
         <uses-permission android:name="android.permission.WAKE_LOCK"/>
@@ -26,6 +24,7 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -34,7 +33,6 @@
             android:name=".service.StockTaskService"
             android:exported="true"
             android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
-
             <intent-filter>
                 <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY"/>
             </intent-filter>
@@ -48,6 +46,21 @@
 
         <activity android:name=".ui.MyStockDetail"/>
 
+        <receiver android:name=".ui.widget.StockDetailWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="com.sam_chordas.android.stockhawk.app.ACTION_DATA_UPDATED"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/stock_detail_widget_info"/>
+        </receiver>
+        <service
+            android:name=".ui.widget.StockDetailWidgetIntentService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
     </application>
 
 </manifest>

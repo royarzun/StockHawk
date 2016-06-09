@@ -10,8 +10,11 @@
     <string name="input_prefill" translatable="false"></string>
 
     <string name="network_toast">Uh-oh! This app requires an internet connection</string>
+
     <string name="non_existent_stock_symbol">Stock Symbol inserted does not exist!</string>
     <string name="stock_already_in_database">Stock is already stored in the Database...</string>
-    <string name="pref_stock_quote_status_key" translatable="false">stock_status</string>
+    <string name="empty_recycler_view">Empty list...</string>
+
     <string name="symbol_search">Symbol Search</string>
+    <string name="add_widget">Add widget</string>
 </resources>
