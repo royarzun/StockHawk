@@ -77,7 +77,6 @@ public class StockTaskService extends GcmTaskService{
             Call<StockResult> stockQuoteQuery = yahooStockQuotesAPI.getStock(getQuery(params));
             stockQuoteQuery.enqueue(new StockQuoteCallBack());
         }
-        updateWidgets();
         return GcmNetworkManager.RESULT_SUCCESS;
     }
 
@@ -161,6 +160,7 @@ public class StockTaskService extends GcmTaskService{
                 mContext.getContentResolver()
                         .applyBatch(QuoteProvider.AUTHORITY,
                             Utils.quoteJsonToContentVals(Arrays.asList(response.body().getQuote())));
+                updateWidgets();
             } catch (RemoteException | OperationApplicationException | NullPointerException e) {
                 String msg = mContext.getString(R.string.non_existent_stock_symbol);
                 Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
@@ -187,7 +187,7 @@ public class StockTaskService extends GcmTaskService{
             try {
                 mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
                         Utils.quoteJsonToContentVals(response.body().getQuotes()));
-
+                updateWidgets();
                 for (Quote quote: response.body().getQuotes()) {
                     Call<StocksHistoricalResult> qHistorilcalQuery = yahooStockQuotesAPI
                             .getStocksHistorical(getHistoricalQuery(quote));
