@@ -2,6 +2,7 @@ package com.sam_chordas.android.stockhawk.ui.widget;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Binder;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
@@ -72,14 +73,16 @@ public class StockDetailWidgetIntentService extends RemoteViewsService {
                         R.layout.widget_detail_list_item);
                 String symbol = data.getString(data.getColumnIndex(QuoteColumns.SYMBOL));
                 String bidPrice = data.getString(data.getColumnIndex(QuoteColumns.BIDPRICE));
+                String change = data.getString(data.getColumnIndex(QuoteColumns.PERCENT_CHANGE));
                 views.setTextViewText(R.id.widget_detail_list_item_symbol, symbol);
                 views.setTextViewText(R.id.widget_detail_list_item_bid_price, bidPrice);
+                views.setTextViewText(R.id.widget_detail_list_item_change, change);
 
-                if (data.getInt(data.getColumnIndex("is_up")) == 1) {
-                        views.setInt(R.id.widget_detail_list_item_bid_price,
+                if (data.getInt(data.getColumnIndex(QuoteColumns.ISUP)) == 1) {
+                        views.setInt(R.id.widget_detail_list_item_change,
                                 "setBackgroundResource",R.drawable.percent_change_pill_green);
                 } else {
-                    views.setInt(R.id.widget_detail_list_item_bid_price,
+                    views.setInt(R.id.widget_detail_list_item_change,
                             "setBackgroundResource",R.drawable.percent_change_pill_red);
                 }
                 return views;
