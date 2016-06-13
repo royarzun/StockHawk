@@ -1,90 +1,94 @@
-<android.support.design.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="start"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:orientation="horizontal">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/appbar"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/app_bar_height"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            xmlns:android="http://schemas.android.com/apk/res/android">
+        <TextView
+            android:id="@+id/detail_stock_symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="@dimen/activity_vertical_margin"
-                android:orientation="vertical">
+        <Space
+            android:layout_width="@dimen/activity_horizontal_margin"
+            android:layout_height="wrap_content"/>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+        <TextView
+            android:id="@+id/detail_stock_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-                    <TextView
-                        android:id="@+id/detail_stock_symbol"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                    <Space
-                        android:layout_width="@dimen/activity_horizontal_margin"
-                        android:layout_height="wrap_content"/>
-
-                    <TextView
-                        android:id="@+id/detail_stock_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                </LinearLayout>
-
-                <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/activity_vertical_margin"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/activity_vertical_margin"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textStyle="bold"
-                        android:layout_gravity="start"
-                        android:layout_weight="1"
-                        android:textAlignment="textStart"
-                        android:id="@+id/detail_stock_bid_price"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textStyle="bold"
-                        android:layout_gravity="end"
-                        android:layout_weight="1"
-                        android:textAlignment="textEnd"
-                        android:id="@+id/detail_stock_change"/>
-                </LinearLayout>
-            </LinearLayout>
-
-        </android.support.design.widget.AppBarLayout>
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/activity_horizontal_margin">
-
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/detail_stock_hist_chart"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </FrameLayout>
     </LinearLayout>
-</android.support.design.widget.CoordinatorLayout>
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/detail_stock_hist_chart"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_margin="16dp"/>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/activity_vertical_margin"/>
+
+    <android.support.v7.widget.GridLayout
+        android:id="@+id/detail_additional_pane"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        app:columnCount="2"
+        android:background="@color/detail_accent_pane_background"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/abc_list_item_padding_horizontal_material"
+        android:paddingTop="@dimen/abc_list_item_padding_horizontal_material">
+
+        <TextView
+            android:id="@+id/detail_stock_label_bid_price"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="@string/detail_stock_bid_price_label"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textColor="@android:color/white"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1" />
+
+        <TextView
+            android:id="@+id/detail_stock_bid_price"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/white"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            app:layout_gravity="fill"/>
+
+        <TextView
+            android:id="@+id/detail_stock_label_change"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/white"
+            android:text="@string/detail_stock_change_label"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1"/>
+
+        <TextView
+            android:id="@+id/detail_stock_change"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/white"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            app:layout_gravity="fill"/>
+
+    </android.support.v7.widget.GridLayout>
+
+</LinearLayout>
+
+
+

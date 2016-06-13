@@ -1,8 +1,10 @@
 package com.sam_chordas.android.stockhawk.ui.fragments;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -123,6 +125,7 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
         return null;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         switch (loader.getId()){
@@ -136,6 +139,12 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
                             data.getColumnIndex(QuoteColumns.BIDPRICE)));
                     stockChangeTV.setText(data.getString(
                             data.getColumnIndex(QuoteColumns.CHANGE)));
+
+                    if (data.getInt(data.getColumnIndex(QuoteColumns.ISUP)) == 1) {
+                        stockChangeTV.setBackgroundResource(R.drawable.percent_change_pill_green);
+                    } else {
+                        stockChangeTV.setBackgroundResource(R.drawable.percent_change_pill_red);
+                    }
 
                 }
                 break;
@@ -162,7 +171,8 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
             count++;
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "Stock Price over time");
+        LineDataSet dataSet = new LineDataSet(entries,
+                getString(R.string.detail_stock_graph_description));
         return new LineData(labels, dataSet);
     }
 

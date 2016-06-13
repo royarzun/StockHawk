@@ -7,6 +7,12 @@
         <item name="colorAccent">@color/material_green_700</item>
     </style>
 
+    <style name="Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="popupTheme">@style/Theme.AppCompat.Light</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
   <style name="PercentChangeTextStyle">
     <item name="android:textSize">20sp</item>
     <item name="android:textColor">#FFF</item>
