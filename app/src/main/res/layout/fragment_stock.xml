@@ -32,7 +32,7 @@
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/detail_stock_hist_chart"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="@dimen/graph_size"
         android:layout_margin="16dp"/>
 
     <Space
