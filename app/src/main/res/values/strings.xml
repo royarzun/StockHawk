@@ -21,6 +21,7 @@
     <!--For the detail view-->
     <string name="detail_stock_bid_price_label">Bid price :</string>
     <string name="detail_stock_change_label">Change :</string>
+    <string name="detail_stock_percent_change_label">Percent Change :</string>
     <string name="detail_stock_graph_description">Stock price over the last month.</string>
 
 </resources>

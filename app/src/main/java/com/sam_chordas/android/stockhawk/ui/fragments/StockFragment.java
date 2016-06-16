@@ -3,6 +3,7 @@ package com.sam_chordas.android.stockhawk.ui.fragments;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
     @Bind(R.id.detail_stock_name) TextView stockNameTV;
     @Bind(R.id.detail_stock_bid_price) TextView stockBidPriceTV;
     @Bind(R.id.detail_stock_change) TextView stockChangeTV;
+    @Bind(R.id.detail_stock_percent_change) TextView stockPercentChangeTV;
     @Bind(R.id.detail_stock_hist_chart) LineChart stockHistoricChartLC;
 
     private OnFragmentInteractionListener mListener;
@@ -139,11 +141,15 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
                             data.getColumnIndex(QuoteColumns.BIDPRICE)));
                     stockChangeTV.setText(data.getString(
                             data.getColumnIndex(QuoteColumns.CHANGE)));
+                    stockPercentChangeTV.setText(data.getString(
+                            data.getColumnIndex(QuoteColumns.PERCENT_CHANGE)));
 
                     if (data.getInt(data.getColumnIndex(QuoteColumns.ISUP)) == 1) {
-                        stockChangeTV.setBackgroundResource(R.drawable.percent_change_pill_green);
+                        stockChangeTV.setTextColor(Color.GREEN);
+                        stockPercentChangeTV.setTextColor(Color.GREEN);
                     } else {
-                        stockChangeTV.setBackgroundResource(R.drawable.percent_change_pill_red);
+                        stockChangeTV.setTextColor(Color.RED);
+                        stockPercentChangeTV.setTextColor(Color.RED);
                     }
 
                 }

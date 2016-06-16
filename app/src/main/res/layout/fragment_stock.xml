@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="start"
     android:orientation="vertical">
 
@@ -55,13 +54,13 @@
         <TextView
             android:id="@+id/detail_stock_label_bid_price"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:text="@string/detail_stock_bid_price_label"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:textColor="@android:color/white"
             app:layout_columnWeight="1"
-            app:layout_gravity="fill"
-            app:layout_rowWeight="1" />
+            app:layout_rowWeight="1"
+            android:gravity="center_vertical"
+            app:layout_gravity="fill"/>
 
         <TextView
             android:id="@+id/detail_stock_bid_price"
@@ -81,6 +80,22 @@
 
         <TextView
             android:id="@+id/detail_stock_change"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/white"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            app:layout_gravity="fill"/>
+
+        <TextView
+            android:id="@+id/detail_stock_label_percent_change"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/white"
+            android:text="@string/detail_stock_percent_change_label"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1"/>
+
+        <TextView
+            android:id="@+id/detail_stock_percent_change"
             android:gravity="center_vertical"
             android:textColor="@android:color/white"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
