@@ -1,8 +1,10 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layoutDirection="locale"
     android:gravity="start"
     android:orientation="vertical">
 
@@ -45,12 +47,17 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
-        app:columnCount="2"
+        android:layoutDirection="locale"
         android:background="@color/detail_accent_pane_background"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingBottom="@dimen/abc_list_item_padding_horizontal_material"
-        android:paddingTop="@dimen/abc_list_item_padding_horizontal_material">
+        android:paddingTop="@dimen/abc_list_item_padding_horizontal_material"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        app:alignmentMode="alignMargins"
+        app:columnCount="2"
+        app:rowCount="3">
 
         <TextView
             android:id="@+id/detail_stock_label_bid_price"
@@ -58,49 +65,55 @@
             android:text="@string/detail_stock_bid_price_label"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:textColor="@android:color/white"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
             android:gravity="center_vertical"
-            app:layout_gravity="fill"/>
+            app:layout_gravity="fill|end"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"/>
 
         <TextView
             android:id="@+id/detail_stock_bid_price"
-            android:gravity="center_vertical"
             android:textColor="@android:color/white"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            app:layout_gravity="fill"/>
+            tools:text="placeholder"
+            android:gravity="center_vertical|end"
+            app:layout_columnWeight="1"
+            app:layout_gravity="end|fill"/>
 
         <TextView
             android:id="@+id/detail_stock_label_change"
-            android:gravity="center_vertical"
             android:textColor="@android:color/white"
             android:text="@string/detail_stock_change_label"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            app:layout_gravity="fill"
+            android:gravity="center_vertical"
+            app:layout_gravity="end|fill"
+            app:layout_columnWeight="1"
             app:layout_rowWeight="1"/>
 
         <TextView
             android:id="@+id/detail_stock_change"
-            android:gravity="center_vertical"
             android:textColor="@android:color/white"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            app:layout_gravity="fill"/>
+            tools:text="placeholder"
+            android:gravity="center_vertical|end"
+            app:layout_gravity="fill|end"/>
 
         <TextView
             android:id="@+id/detail_stock_label_percent_change"
-            android:gravity="center_vertical"
             android:textColor="@android:color/white"
             android:text="@string/detail_stock_percent_change_label"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            app:layout_gravity="fill"
+            android:gravity="center_vertical"
+            app:layout_gravity="fill|end"
+            app:layout_columnWeight="1"
             app:layout_rowWeight="1"/>
 
         <TextView
             android:id="@+id/detail_stock_percent_change"
-            android:gravity="center_vertical"
             android:textColor="@android:color/white"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            app:layout_gravity="fill"/>
+            tools:text="placeholder"
+            android:gravity="center_vertical|end"
+            app:layout_gravity="fill|end"/>
 
     </android.support.v7.widget.GridLayout>
 
