@@ -1,8 +1,11 @@
 package com.sam_chordas.android.stockhawk.ui.fragments;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -42,6 +45,7 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
     @Bind(R.id.detail_stock_name) TextView stockNameTV;
     @Bind(R.id.detail_stock_bid_price) TextView stockBidPriceTV;
     @Bind(R.id.detail_stock_change) TextView stockChangeTV;
+    @Bind(R.id.detail_stock_percent_change) TextView stockPercentChangeTV;
     @Bind(R.id.detail_stock_hist_chart) LineChart stockHistoricChartLC;
 
     private OnFragmentInteractionListener mListener;
@@ -72,6 +76,10 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_stock, container, false);
         ButterKnife.bind(this, rootView);
+        stockHistoricChartLC.getXAxis().setTextColor(Color.WHITE);
+        stockHistoricChartLC.getAxisLeft().setTextColor(Color.WHITE);
+        stockHistoricChartLC.getAxisRight().setTextColor(Color.WHITE);
+        stockHistoricChartLC.getLegend().setTextColor(Color.WHITE);
         return rootView;
     }
 
@@ -123,6 +131,7 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
         return null;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         switch (loader.getId()){
@@ -136,12 +145,25 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
                             data.getColumnIndex(QuoteColumns.BIDPRICE)));
                     stockChangeTV.setText(data.getString(
                             data.getColumnIndex(QuoteColumns.CHANGE)));
+                    stockPercentChangeTV.setText(data.getString(
+                            data.getColumnIndex(QuoteColumns.PERCENT_CHANGE)));
+
+                    if (data.getInt(data.getColumnIndex(QuoteColumns.ISUP)) == 1) {
+                        stockChangeTV.setTextColor(Color.GREEN);
+                        stockPercentChangeTV.setTextColor(Color.GREEN);
+                    } else {
+                        stockChangeTV.setTextColor(Color.RED);
+                        stockPercentChangeTV.setTextColor(Color.RED);
+                    }
 
                 }
                 break;
             case QUOTE_HISTORICAL_ID:
                 if (data.moveToFirst()) {
-                    stockHistoricChartLC.setData(getChartData(data));
+                    LineData lineData = getChartData(data);
+                    lineData.setValueTextColor(Color.WHITE);
+                    stockHistoricChartLC.setData(lineData);
+                    stockHistoricChartLC.animateXY(1000, 1000);
                     break;
                 }
         }
@@ -162,7 +184,8 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
             count++;
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "Stock Price over time");
+        LineDataSet dataSet = new LineDataSet(entries,
+                getString(R.string.detail_stock_graph_description));
         return new LineData(labels, dataSet);
     }
 

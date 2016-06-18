@@ -32,6 +32,7 @@ import com.melnykov.fab.FloatingActionButton;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
+import com.sam_chordas.android.stockhawk.data.models.Quote;
 import com.sam_chordas.android.stockhawk.rest.QuoteCursorAdapter;
 import com.sam_chordas.android.stockhawk.rest.RecyclerViewItemClickListener;
 import com.sam_chordas.android.stockhawk.rest.Utils;
@@ -193,6 +194,7 @@ public class MyStocksActivity extends AppCompatActivity implements
         String[] columnsIds = new String[]{
                 QuoteColumns._ID,
                 QuoteColumns.SYMBOL,
+                QuoteColumns.NAME,
                 QuoteColumns.BIDPRICE,
                 QuoteColumns.PERCENT_CHANGE,
                 QuoteColumns.CHANGE,
@@ -219,8 +221,16 @@ public class MyStocksActivity extends AppCompatActivity implements
 
     @Override
     public void onItemClick(View v, int position) {
-        Intent intent = new Intent(this, MyStockDetail.class);
-        intent.putExtra(StockFragment.ARG_SYMBOL, mCursorAdapter.getSymbol(position));
-        startActivity(intent);
+        String symbol = mCursorAdapter.getSymbol(position);
+        if (findViewById(R.id.fragment) == null){
+            Intent intent = new Intent(this, MyStockDetail.class);
+            intent.putExtra(StockFragment.ARG_SYMBOL, symbol);
+            startActivity(intent);
+        } else {
+            StockFragment fragment = StockFragment.newInstance(symbol);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment, fragment, "detail")
+                    .addToBackStack(null).commit();
+        }
     }
 }
