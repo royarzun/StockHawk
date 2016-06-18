@@ -122,7 +122,7 @@ public class StockTaskService extends GcmTaskService{
 
     private String getHistoricalQuery(Quote quote) {
         // Load historic stock data
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         Date currentDate = new Date();
 
         Calendar calEnd = Calendar.getInstance();
