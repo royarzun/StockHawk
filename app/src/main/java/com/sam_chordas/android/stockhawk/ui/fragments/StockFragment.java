@@ -76,6 +76,10 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_stock, container, false);
         ButterKnife.bind(this, rootView);
+        stockHistoricChartLC.getXAxis().setTextColor(Color.WHITE);
+        stockHistoricChartLC.getAxisLeft().setTextColor(Color.WHITE);
+        stockHistoricChartLC.getAxisRight().setTextColor(Color.WHITE);
+        stockHistoricChartLC.getLegend().setTextColor(Color.WHITE);
         return rootView;
     }
 
@@ -156,7 +160,10 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
                 break;
             case QUOTE_HISTORICAL_ID:
                 if (data.moveToFirst()) {
-                    stockHistoricChartLC.setData(getChartData(data));
+                    LineData lineData = getChartData(data);
+                    lineData.setValueTextColor(Color.WHITE);
+                    stockHistoricChartLC.setData(lineData);
+                    stockHistoricChartLC.animateXY(1000, 1000);
                     break;
                 }
         }
