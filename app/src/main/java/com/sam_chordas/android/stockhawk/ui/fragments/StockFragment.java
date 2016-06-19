@@ -45,12 +45,15 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
     @Bind(R.id.detail_stock_name) TextView stockNameTV;
     @Bind(R.id.detail_stock_bid_price) TextView stockBidPriceTV;
     @Bind(R.id.detail_stock_change) TextView stockChangeTV;
-    @Bind(R.id.detail_stock_percent_change) TextView stockPercentChangeTV;
+    //@Bind(R.id.detail_stock_percent_change) TextView stockPercentChangeTV;
     @Bind(R.id.detail_stock_hist_chart) LineChart stockHistoricChartLC;
 
     private OnFragmentInteractionListener mListener;
 
     public StockFragment() {
+        Bundle args = new Bundle();
+        args.putString(ARG_SYMBOL, "YHOO");
+        this.setArguments(args);
     }
 
     public static StockFragment newInstance(String symbol) {
@@ -74,12 +77,8 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_stock, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_stock_start, container, false);
         ButterKnife.bind(this, rootView);
-        stockHistoricChartLC.getXAxis().setTextColor(Color.WHITE);
-        stockHistoricChartLC.getAxisLeft().setTextColor(Color.WHITE);
-        stockHistoricChartLC.getAxisRight().setTextColor(Color.WHITE);
-        stockHistoricChartLC.getLegend().setTextColor(Color.WHITE);
         return rootView;
     }
 
@@ -145,24 +144,22 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
                             data.getColumnIndex(QuoteColumns.BIDPRICE)));
                     stockChangeTV.setText(data.getString(
                             data.getColumnIndex(QuoteColumns.CHANGE)));
-                    stockPercentChangeTV.setText(data.getString(
-                            data.getColumnIndex(QuoteColumns.PERCENT_CHANGE)));
+                    //stockPercentChangeTV.setText(data.getString(
+                    //        data.getColumnIndex(QuoteColumns.PERCENT_CHANGE)));
 
                     if (data.getInt(data.getColumnIndex(QuoteColumns.ISUP)) == 1) {
                         stockChangeTV.setTextColor(Color.GREEN);
-                        stockPercentChangeTV.setTextColor(Color.GREEN);
+                      //  stockPercentChangeTV.setTextColor(Color.GREEN);
                     } else {
                         stockChangeTV.setTextColor(Color.RED);
-                        stockPercentChangeTV.setTextColor(Color.RED);
+                      //  stockPercentChangeTV.setTextColor(Color.RED);
                     }
 
                 }
                 break;
             case QUOTE_HISTORICAL_ID:
                 if (data.moveToFirst()) {
-                    LineData lineData = getChartData(data);
-                    lineData.setValueTextColor(Color.WHITE);
-                    stockHistoricChartLC.setData(lineData);
+                    stockHistoricChartLC.setData(getChartData(data));
                     stockHistoricChartLC.animateXY(1000, 1000);
                     break;
                 }
