@@ -79,5 +79,7 @@
         fab:fab_shadow="true"
         fab:fab_type="normal"
         fab:layout_anchorGravity="bottom|end"
+        android:layout_alignEnd="@+id/fragment"
+        android:layout_alignRight="@+id/fragment"
         android:layout_alignBottom="@+id/linear_layout_recycler_view"/>
 </RelativeLayout>
