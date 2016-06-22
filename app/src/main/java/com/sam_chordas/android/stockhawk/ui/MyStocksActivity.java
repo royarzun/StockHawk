@@ -205,8 +205,7 @@ public class MyStocksActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (mCursorAdapter != null){
-            if(findViewById(R.id.fragment)!=null){
-                data.moveToFirst();
+            if(findViewById(R.id.fragment)!=null && data.moveToFirst()){
                 String symbol = data.getString(data.getColumnIndex(QuoteColumns.SYMBOL));
                 StockFragment fragment = StockFragment.newInstance(symbol);
                 getSupportFragmentManager().beginTransaction()
