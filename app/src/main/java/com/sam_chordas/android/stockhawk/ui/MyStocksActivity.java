@@ -208,6 +208,15 @@ public class MyStocksActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (mCursorAdapter != null){
+            if(findViewById(R.id.fragment)!=null){
+                data.moveToFirst();
+                String symbol = data.getString(data.getColumnIndex(QuoteColumns.SYMBOL));
+                StockFragment fragment = StockFragment.newInstance(symbol);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment, fragment, "detail")
+                        .commit();
+
+            }
             mCursorAdapter.swapCursor(data);
         }
         mEmptyView.setVisibility(data == null ? View.VISIBLE : View.GONE);

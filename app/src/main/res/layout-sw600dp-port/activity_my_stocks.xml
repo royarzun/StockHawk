@@ -32,8 +32,8 @@
         android:layout_width="match_parent"
         android:layout_height="24dp"/>
 
-    <fragment
-        android:name="com.sam_chordas.android.stockhawk.ui.fragments.StockFragment"
+    <FrameLayout
+        android:elevation="@dimen/appbar_elevation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/logo_imageview"
@@ -44,6 +44,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:layout_below="@id/fragment"
+        android:paddingTop="@dimen/activity_horizontal_margin"
         android:paddingLeft="@dimen/list_item_extra_padding"
         android:paddingRight="@dimen/list_item_extra_padding"
         android:orientation="vertical"

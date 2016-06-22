@@ -50,12 +50,6 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
 
     private OnFragmentInteractionListener mListener;
 
-    public StockFragment() {
-        Bundle args = new Bundle();
-        args.putString(ARG_SYMBOL, "YHOO");
-        this.setArguments(args);
-    }
-
     public static StockFragment newInstance(String symbol) {
         StockFragment fragment = new StockFragment();
         Bundle args = new Bundle();

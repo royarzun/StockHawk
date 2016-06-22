@@ -48,10 +48,11 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <fragment
-                android:name="com.sam_chordas.android.stockhawk.ui.fragments.StockFragment"
+            <FrameLayout
+                android:elevation="@dimen/appbar_elevation"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/logo_imageview"
                 android:id="@+id/fragment"/>
         </LinearLayout>
 
