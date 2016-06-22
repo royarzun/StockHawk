@@ -130,16 +130,25 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
         switch (loader.getId()){
             case QUOTE_LOADER_ID:
                 if (data.moveToFirst()) {
-                    stockSymbolTV.setText(data.getString(
-                            data.getColumnIndex(QuoteColumns.SYMBOL)));
-                    stockNameTV.setText(data.getString(
-                            data.getColumnIndex(QuoteColumns.NAME)));
-                    stockBidPriceTV.setText(data.getString(
-                            data.getColumnIndex(QuoteColumns.BIDPRICE)));
-                    stockChangeTV.setText(data.getString(
-                            data.getColumnIndex(QuoteColumns.CHANGE)));
-                    stockPercentChangeTV.setText(data.getString(
-                            data.getColumnIndex(QuoteColumns.PERCENT_CHANGE)));
+                    String symbol = data.getString(data.getColumnIndex(QuoteColumns.SYMBOL));
+                    stockSymbolTV.setText(symbol);
+                    stockSymbolTV.setContentDescription(symbol);
+
+                    String stockName = data.getString(data.getColumnIndex(QuoteColumns.NAME));
+                    stockNameTV.setText(stockName);
+                    stockSymbolTV.setContentDescription(stockName);
+
+                    String stockBidPrice = data.getString(data.getColumnIndex(QuoteColumns.BIDPRICE));
+                    stockBidPriceTV.setText(stockBidPrice);
+                    stockBidPriceTV.setContentDescription(stockBidPrice);
+
+                    String stockChange = data.getString(data.getColumnIndex(QuoteColumns.CHANGE));
+                    stockChangeTV.setText(stockChange);
+                    stockChangeTV.setContentDescription(stockChange);
+
+                    String stockPChange = (data.getString(data.getColumnIndex(QuoteColumns.PERCENT_CHANGE)));
+                    stockPercentChangeTV.setText(stockPChange);
+                    stockPercentChangeTV.setContentDescription(stockPChange);
 
                     if (data.getInt(data.getColumnIndex(QuoteColumns.ISUP)) == 1) {
                         stockChangeTV.setTextColor(Color.GREEN);
