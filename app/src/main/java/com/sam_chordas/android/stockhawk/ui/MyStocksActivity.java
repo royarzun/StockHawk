@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -55,7 +54,6 @@ public class MyStocksActivity extends AppCompatActivity implements
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.fab) FloatingActionButton fab;
     @Bind(R.id.recycler_view) RecyclerView recyclerView;
-    @Bind(R.id.coordinator_layout) CoordinatorLayout coordinatorLayout;
     @Bind(R.id.empty_recycler_view_msg) View mEmptyView;
 
     @Override
@@ -65,6 +63,7 @@ public class MyStocksActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_my_stocks);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         // The intent service is for executing immediate pulls from the Yahoo API
         // GCMTaskService can only schedule tasks, they cannot execute immediately
@@ -133,9 +132,9 @@ public class MyStocksActivity extends AppCompatActivity implements
             @Override
             protected void onPostExecute(Boolean stockAlreadySaved) {
                 if (stockAlreadySaved) {
-                    Snackbar.make(coordinatorLayout,
-                            R.string.stock_already_in_database,
-                            Snackbar.LENGTH_LONG).show();
+                    //Snackbar.make(coordinatorLayout,
+                    //        R.string.stock_already_in_database,
+                     //       Snackbar.LENGTH_LONG).show();
                 } else {
                     Intent stockIntentService = new Intent(MyStocksActivity.this,
                             StockIntentService.class);
@@ -209,6 +208,15 @@ public class MyStocksActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (mCursorAdapter != null){
+            if(findViewById(R.id.fragment)!=null){
+                data.moveToFirst();
+                String symbol = data.getString(data.getColumnIndex(QuoteColumns.SYMBOL));
+                StockFragment fragment = StockFragment.newInstance(symbol);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment, fragment, "detail")
+                        .commit();
+
+            }
             mCursorAdapter.swapCursor(data);
         }
         mEmptyView.setVisibility(data == null ? View.VISIBLE : View.GONE);

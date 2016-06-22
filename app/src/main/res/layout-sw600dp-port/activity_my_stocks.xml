@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layoutDirection="locale"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:elevation="@dimen/appbar_elevation"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    <ImageView
+        android:id="@+id/logo_imageview"
+        android:elevation="@dimen/appbar_elevation"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/listPreferredItemHeight"
+        android:layout_below="@id/toolbar"
+        android:scaleType="center"
+        android:src="@drawable/ic_logo"
+        android:background="@color/material_blue_500"
+        android:contentDescription="@string/app_name"/>
+
+    <View
+        android:elevation="@dimen/appbar_elevation"
+        android:background="@color/material_blue_500"
+        android:layout_below="@id/logo_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"/>
+
+    <FrameLayout
+        android:elevation="@dimen/appbar_elevation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logo_imageview"
+        android:id="@+id/fragment"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_below="@id/fragment"
+        android:paddingTop="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/list_item_extra_padding"
+        android:paddingRight="@dimen/list_item_extra_padding"
+        android:orientation="vertical"
+        android:id="@+id/linear_layout_recycler_view">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+        <TextView
+            android:id="@+id/empty_recycler_view_msg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_anchor="@+id/recycler_view"
+            app:layout_anchorGravity="fill"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="@string/empty_recycler_view"/>
+    </LinearLayout>
+
+    <com.melnykov.fab.FloatingActionButton
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add_white_24dp"
+        fab:fab_colorNormal="@color/material_blue_500"
+        fab:fab_colorPressed="@color/material_blue_700"
+        fab:fab_shadow="true"
+        fab:fab_type="normal"
+        fab:layout_anchorGravity="bottom|end"
+        android:layout_alignEnd="@+id/fragment"
+        android:layout_alignRight="@+id/fragment"
+        android:layout_alignBottom="@+id/linear_layout_recycler_view"/>
+</RelativeLayout>

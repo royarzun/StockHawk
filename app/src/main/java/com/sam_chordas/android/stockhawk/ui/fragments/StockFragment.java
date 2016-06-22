@@ -50,9 +50,6 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
 
     private OnFragmentInteractionListener mListener;
 
-    public StockFragment() {
-    }
-
     public static StockFragment newInstance(String symbol) {
         StockFragment fragment = new StockFragment();
         Bundle args = new Bundle();
@@ -74,12 +71,8 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_stock, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_stock_start, container, false);
         ButterKnife.bind(this, rootView);
-        stockHistoricChartLC.getXAxis().setTextColor(Color.WHITE);
-        stockHistoricChartLC.getAxisLeft().setTextColor(Color.WHITE);
-        stockHistoricChartLC.getAxisRight().setTextColor(Color.WHITE);
-        stockHistoricChartLC.getLegend().setTextColor(Color.WHITE);
         return rootView;
     }
 
@@ -137,16 +130,25 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
         switch (loader.getId()){
             case QUOTE_LOADER_ID:
                 if (data.moveToFirst()) {
-                    stockSymbolTV.setText(data.getString(
-                            data.getColumnIndex(QuoteColumns.SYMBOL)));
-                    stockNameTV.setText(data.getString(
-                            data.getColumnIndex(QuoteColumns.NAME)));
-                    stockBidPriceTV.setText(data.getString(
-                            data.getColumnIndex(QuoteColumns.BIDPRICE)));
-                    stockChangeTV.setText(data.getString(
-                            data.getColumnIndex(QuoteColumns.CHANGE)));
-                    stockPercentChangeTV.setText(data.getString(
-                            data.getColumnIndex(QuoteColumns.PERCENT_CHANGE)));
+                    String symbol = data.getString(data.getColumnIndex(QuoteColumns.SYMBOL));
+                    stockSymbolTV.setText(symbol);
+                    stockSymbolTV.setContentDescription(symbol);
+
+                    String stockName = data.getString(data.getColumnIndex(QuoteColumns.NAME));
+                    stockNameTV.setText(stockName);
+                    stockSymbolTV.setContentDescription(stockName);
+
+                    String stockBidPrice = data.getString(data.getColumnIndex(QuoteColumns.BIDPRICE));
+                    stockBidPriceTV.setText(stockBidPrice);
+                    stockBidPriceTV.setContentDescription(stockBidPrice);
+
+                    String stockChange = data.getString(data.getColumnIndex(QuoteColumns.CHANGE));
+                    stockChangeTV.setText(stockChange);
+                    stockChangeTV.setContentDescription(stockChange);
+
+                    String stockPChange = (data.getString(data.getColumnIndex(QuoteColumns.PERCENT_CHANGE)));
+                    stockPercentChangeTV.setText(stockPChange);
+                    stockPercentChangeTV.setContentDescription(stockPChange);
 
                     if (data.getInt(data.getColumnIndex(QuoteColumns.ISUP)) == 1) {
                         stockChangeTV.setTextColor(Color.GREEN);
@@ -160,9 +162,7 @@ public class StockFragment extends Fragment implements LoaderCallbacks<Cursor>{
                 break;
             case QUOTE_HISTORICAL_ID:
                 if (data.moveToFirst()) {
-                    LineData lineData = getChartData(data);
-                    lineData.setValueTextColor(Color.WHITE);
-                    stockHistoricChartLC.setData(lineData);
+                    stockHistoricChartLC.setData(getChartData(data));
                     stockHistoricChartLC.animateXY(1000, 1000);
                     break;
                 }
