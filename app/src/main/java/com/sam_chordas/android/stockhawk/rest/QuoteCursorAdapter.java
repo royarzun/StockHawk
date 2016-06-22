@@ -46,8 +46,14 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, final Cursor cursor) {
         viewHolder.symbol.setText(cursor.getString(cursor.getColumnIndex(QuoteColumns.SYMBOL)));
+        viewHolder.symbol.setContentDescription(cursor.getString(cursor.getColumnIndex(QuoteColumns.SYMBOL)));
+
         viewHolder.bidPrice.setText(cursor.getString(cursor.getColumnIndex(QuoteColumns.BIDPRICE)));
+        viewHolder.bidPrice.setContentDescription(cursor.getString(cursor.getColumnIndex(QuoteColumns.BIDPRICE)));
+
         viewHolder.name.setText(cursor.getString(cursor.getColumnIndex(QuoteColumns.NAME)));
+        viewHolder.name.setContentDescription(cursor.getString(cursor.getColumnIndex(QuoteColumns.NAME)));
+
         int sdk = Build.VERSION.SDK_INT;
         if (cursor.getInt(cursor.getColumnIndex(QuoteColumns.ISUP)) == 1) {
             if (sdk < Build.VERSION_CODES.JELLY_BEAN) {

@@ -25,5 +25,6 @@
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/detail_stock_hist_chart"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/graph_size"/>
+        android:layout_height="@dimen/graph_size"
+        android:contentDescription="@string/detail_stock_graph_content_description"/>
 </LinearLayout>
