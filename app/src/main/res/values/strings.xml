@@ -24,4 +24,8 @@
     <string name="detail_stock_percent_change_label">Percent Change :</string>
     <string name="detail_stock_graph_description">Stock price over the last month.</string>
 
+    <!--Translatable content descriptions-->
+    <string name="detail_stock_graph_content_description">Graph showing stock price behavior over time</string>
+    <string name="fab_button_content_description">Add a new stock symbol</string>
+
 </resources>
