@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,7 +30,6 @@ import com.melnykov.fab.FloatingActionButton;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
-import com.sam_chordas.android.stockhawk.data.models.Quote;
 import com.sam_chordas.android.stockhawk.rest.QuoteCursorAdapter;
 import com.sam_chordas.android.stockhawk.rest.RecyclerViewItemClickListener;
 import com.sam_chordas.android.stockhawk.rest.Utils;
@@ -132,9 +130,8 @@ public class MyStocksActivity extends AppCompatActivity implements
             @Override
             protected void onPostExecute(Boolean stockAlreadySaved) {
                 if (stockAlreadySaved) {
-                    //Snackbar.make(coordinatorLayout,
-                    //        R.string.stock_already_in_database,
-                     //       Snackbar.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),
+                            getString(R.string.stock_already_in_database), Toast.LENGTH_LONG).show();
                 } else {
                     Intent stockIntentService = new Intent(MyStocksActivity.this,
                             StockIntentService.class);
@@ -215,7 +212,6 @@ public class MyStocksActivity extends AppCompatActivity implements
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment, fragment, "detail")
                         .commit();
-
             }
             mCursorAdapter.swapCursor(data);
         }
