@@ -58,8 +58,9 @@
         android:id="@+id/stock_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
+        android:gravity="center_vertical|start"
         android:layout_gravity="fill_horizontal"
+        android:textAlignment="viewStart"
         android:layout_columnSpan="2"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:text="some very very very long placeholder"/>
