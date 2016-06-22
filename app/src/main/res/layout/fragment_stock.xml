@@ -35,8 +35,9 @@
                 android:layout_height="wrap_content"
                 android:text="@string/detail_stock_bid_price_label"
                 android:textColor="@android:color/white"
-                android:gravity="center_vertical"
-                app:layout_gravity="fill|end"
+                android:gravity="center_vertical|start"
+                android:textAlignment="viewStart"
+                app:layout_gravity="fill_horizontal"
                 app:layout_columnWeight="1"
                 app:layout_rowWeight="1"/>
 
@@ -44,16 +45,18 @@
                 android:id="@+id/detail_stock_bid_price"
                 android:textColor="@android:color/white"
                 tools:text="placeholder"
-                android:gravity="center_vertical|end"
+                android:gravity="center_vertical|start"
+                android:textAlignment="viewStart"
                 app:layout_columnWeight="1"
-                app:layout_gravity="end|fill"/>
+                app:layout_gravity="fill"/>
 
             <TextView
                 android:id="@+id/detail_stock_label_change"
                 android:textColor="@android:color/white"
                 android:text="@string/detail_stock_change_label"
-                android:gravity="center_vertical"
-                app:layout_gravity="end|fill"
+                android:gravity="center_vertical|start"
+                android:textAlignment="viewStart"
+                app:layout_gravity="fill_horizontal"
                 app:layout_columnWeight="1"
                 app:layout_rowWeight="1"/>
 
@@ -61,8 +64,9 @@
                 android:id="@+id/detail_stock_change"
                 android:textColor="@android:color/white"
                 tools:text="placeholder"
-                android:gravity="center_vertical|end"
-                app:layout_gravity="fill|end"/>
+                android:gravity="center_vertical|start"
+                android:textAlignment="viewStart"
+                app:layout_gravity="fill"/>
         </android.support.v7.widget.GridLayout>
     </RelativeLayout>
 </FrameLayout>
