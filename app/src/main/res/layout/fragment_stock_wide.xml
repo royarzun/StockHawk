@@ -58,7 +58,8 @@
                 android:gravity="center_vertical|start"
                 android:textAlignment="viewStart"
                 app:layout_columnWeight="1"
-                app:layout_gravity="fill"/>
+                app:layout_gravity="fill"
+                style="@style/PercentChangeTextStyle"/>
 
             <TextView
                 android:id="@+id/detail_stock_label_change"
@@ -76,7 +77,27 @@
                 tools:text="placeholder"
                 android:gravity="center_vertical|start"
                 android:textAlignment="viewStart"
-                app:layout_gravity="fill"/>
+                app:layout_gravity="fill"
+                style="@style/PercentChangeTextStyle"/>
+
+            <TextView
+                android:id="@+id/detail_stock_label_percent_change"
+                android:textColor="@android:color/white"
+                android:text="@string/detail_stock_percent_change_label"
+                android:gravity="center_vertical|start"
+                android:textAlignment="viewStart"
+                app:layout_gravity="fill_horizontal"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"/>
+
+            <TextView
+                android:id="@+id/detail_stock_percent_change"
+                android:textColor="@android:color/white"
+                tools:text="placeholder"
+                android:gravity="center_vertical|start"
+                android:textAlignment="viewStart"
+                app:layout_gravity="fill"
+                style="@style/PercentChangeTextStyle"/>
         </android.support.v7.widget.GridLayout>
     </LinearLayout>
 </FrameLayout>
