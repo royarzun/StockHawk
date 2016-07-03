@@ -84,7 +84,7 @@ public class StockTaskService extends GcmTaskService{
         final StringBuilder urlStringBuilder = new StringBuilder();
         Cursor initQueryCursor;
         if (params.getTag().equals(StockIntentService.ACTION_INIT) ||
-                params.getTag().equals("periodic")){
+                params.getTag().equals(StockIntentService.ACTION_PERIODIC_UPDATE)){
             isUpdate = true;
             initQueryCursor = mContext.getContentResolver()
                     .query(QuoteProvider.Quotes.CONTENT_URI,

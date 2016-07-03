@@ -167,8 +167,13 @@ public class MyStocksActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings)
-            return true;
+        if (id == R.id.action_update_stocks){
+            Intent stockIntentService = new Intent(MyStocksActivity.this,
+                    StockIntentService.class);
+            stockIntentService.putExtra(StockIntentService.EXTRA_TAG,
+                    StockIntentService.ACTION_PERIODIC_UPDATE);
+            startService(stockIntentService);
+        }
         if (id == R.id.action_change_units){
             // this is for changing stock changes from percent value to dollar value
             Utils.showPercent = !Utils.showPercent;
