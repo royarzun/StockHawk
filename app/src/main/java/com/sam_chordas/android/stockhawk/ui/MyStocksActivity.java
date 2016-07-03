@@ -172,7 +172,11 @@ public class MyStocksActivity extends AppCompatActivity implements
                     StockIntentService.class);
             stockIntentService.putExtra(StockIntentService.EXTRA_TAG,
                     StockIntentService.ACTION_PERIODIC_UPDATE);
-            startService(stockIntentService);
+            if (isNetworkAvailable()){
+                startService(stockIntentService);
+            } else {
+                networkToast();
+            }
         }
         if (id == R.id.action_change_units){
             // this is for changing stock changes from percent value to dollar value
