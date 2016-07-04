@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.View;
 
 import com.sam_chordas.android.stockhawk.R;
@@ -21,7 +22,6 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback{
   private static final String LOG_TAG = SimpleItemTouchHelperCallback.class.getSimpleName();
   private final ItemTouchHelperAdapter mAdapter;
   private Paint p = new Paint();
-  public static final float ALPHA_FULL = 1.0f;
 
   public SimpleItemTouchHelperCallback(ItemTouchHelperAdapter adapter){
     mAdapter = adapter;
@@ -70,11 +70,18 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback{
 
         if (dX < 0) {
           p.setColor(Color.parseColor("#D32F2F"));
-          RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(),(float) itemView.getRight(), (float) itemView.getBottom());
+          RectF background = new RectF((float) itemView.getRight() + dX,
+                  (float) itemView.getTop(),
+                  (float) itemView.getRight(),
+                  (float) itemView.getBottom());
           c.drawRect(background,p);
           icon = BitmapFactory.decodeResource(recyclerView.getResources(), R.drawable.ic_action_delete);
-          RectF icon_dest = new RectF((float) itemView.getRight() - 2*width ,(float) itemView.getTop() + width,(float) itemView.getRight() - width,(float)itemView.getBottom() - width);
+          RectF icon_dest = new RectF((float) itemView.getRight() - 2*width ,
+                  (float) itemView.getTop() + width,
+                  (float) itemView.getRight() - width,
+                  (float)itemView.getBottom() - width);
           c.drawBitmap(icon,null,icon_dest,p);
+          Log.d(LOG_TAG, "Swipe left");
         }
 
     }
