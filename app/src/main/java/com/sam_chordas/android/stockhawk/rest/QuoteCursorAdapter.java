@@ -6,10 +6,12 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
@@ -25,7 +27,7 @@ import com.sam_chordas.android.stockhawk.touch_helper.ItemTouchHelperViewHolder;
  */
 public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAdapter.ViewHolder>
     implements ItemTouchHelperAdapter {
-
+    private static final String LOG_TAG = QuoteCursorAdapter.class.getSimpleName();
     private static Context mContext;
     private static Typeface robotoLight;
 
@@ -81,11 +83,14 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
 
     @Override
     public void onItemDismiss(int position) {
+        Log.d(LOG_TAG, "OnItemDismiss");
         Cursor c = getCursor();
         c.moveToPosition(position);
         String symbol = c.getString(c.getColumnIndex(QuoteColumns.SYMBOL));
-        mContext.getContentResolver().delete(QuoteProvider.Quotes.withSymbol(symbol), null, null);
+        int result = mContext.getContentResolver().delete(QuoteProvider.Quotes.withSymbol(symbol), null, null);
+        Log.d(LOG_TAG, "Item deleted with result: " + Integer.toString(result));
         notifyItemRemoved(position);
+        Toast.makeText(mContext, R.string.action_delete_stock_done, Toast.LENGTH_LONG).show();
     }
 
     public String getSymbol(int position) {
