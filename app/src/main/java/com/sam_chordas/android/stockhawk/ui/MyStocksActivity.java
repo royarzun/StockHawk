@@ -84,9 +84,9 @@ public class MyStocksActivity extends AppCompatActivity implements
         fab.attachToRecyclerView(recyclerView);
         recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(this, this));
 
-        //ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mCursorAdapter);
-        //ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-        //itemTouchHelper.attachToRecyclerView(recyclerView);
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mCursorAdapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 
     }
 
