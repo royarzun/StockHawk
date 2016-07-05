@@ -7,11 +7,15 @@
         android:title="@string/action_change_units"
         android:icon="@drawable/ic_attach_money_white_24dp"
         android:orderInCategory="99"
+        android:nextFocusRight="@+id/action_update_stocks"
+        android:nextFocusDown="@+id/logo_imageview"
         app:showAsAction="ifRoom"/>
 
   <item android:id="@+id/action_update_stocks"
         android:title="@string/action_update_stocks"
         android:icon="@drawable/ic_action_update"
         android:orderInCategory="100"
+        android:nextFocusLeft="@+id/action_change_units"
+        android:nextFocusDown="@+id/logo_imageview"
         app:showAsAction="ifRoom" />
 </menu>
