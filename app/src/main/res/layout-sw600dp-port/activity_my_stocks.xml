@@ -23,6 +23,7 @@
         android:scaleType="center"
         android:src="@drawable/ic_logo"
         android:background="@color/material_blue_500"
+        android:nextFocusDown="@+id/recycler_view"
         android:contentDescription="@string/app_name"/>
 
     <View
