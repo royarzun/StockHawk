@@ -26,6 +26,9 @@ import butterknife.Bind;
 import butterknife.OnClick;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.gcm.GcmNetworkManager;
+import com.google.android.gms.gcm.PeriodicTask;
+import com.google.android.gms.gcm.Task;
 import com.melnykov.fab.FloatingActionButton;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
@@ -34,6 +37,7 @@ import com.sam_chordas.android.stockhawk.rest.QuoteCursorAdapter;
 import com.sam_chordas.android.stockhawk.rest.RecyclerViewItemClickListener;
 import com.sam_chordas.android.stockhawk.rest.Utils;
 import com.sam_chordas.android.stockhawk.service.StockIntentService;
+import com.sam_chordas.android.stockhawk.service.StockTaskService;
 import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
 import com.sam_chordas.android.stockhawk.ui.fragments.StockFragment;
 
@@ -87,6 +91,16 @@ public class MyStocksActivity extends AppCompatActivity implements
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mCursorAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
+
+        PeriodicTask periodicTask = new PeriodicTask.Builder()
+                .setService(StockTaskService.class)
+                .setPeriod(60 * 60)
+                .setFlex(10)
+                .setTag(StockTaskService.ACTION_PERIODIC_UPDATE)
+                .setRequiredNetwork(Task.NETWORK_STATE_CONNECTED)
+                .setRequiresCharging(false)
+                .build();
+        GcmNetworkManager.getInstance(this).schedule(periodicTask);
 
     }
 
