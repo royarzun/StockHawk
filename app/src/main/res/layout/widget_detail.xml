@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:id="@+id/widget"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:layout_margin="@dimen/widget_margin">
+
+    <ListView
+        android:id="@+id/widget_detail_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        tools:listitem="@layout/widget_detail_list_item"/>
+
+    <TextView
+        android:id="@+id/widget_detail_empty_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:text="@string/empty_recycler_view"/>
+</FrameLayout>

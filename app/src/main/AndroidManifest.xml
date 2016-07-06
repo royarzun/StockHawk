@@ -1,44 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sam_chordas.android.stockhawk" >
+          package="com.sam_chordas.android.stockhawk">
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
-
-        <uses-permission android:name="android.permission.INTERNET" />
-        <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-        <uses-permission android:name="android.permission.WAKE_LOCK" />
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+        <uses-permission android:name="android.permission.INTERNET"/>
+        <uses-permission android:name="android.permission.WAKE_LOCK"/>
+        <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
 
         <permission
             android:name="com.google.android.gcm.demo.permission.C2D_MESSAGE"
-            android:protectionLevel="signature" />
+            android:protectionLevel="signature"/>
 
-        <uses-permission
-            android:name="com.google.android.gcm.demo.permission.C2D_MESSAGE" />
+        <uses-permission android:name="com.google.android.gcm.demo.permission.C2D_MESSAGE"/>
+
         <activity
-            android:name="com.sam_chordas.android.stockhawk.ui.MyStocksActivity"
-            android:label="@string/app_name" >
+            android:name=".ui.MyStocksActivity"
+            android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <service android:name="com.sam_chordas.android.stockhawk.service.StockTaskService"
-            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE"
-            android:exported="true">
+
+        <activity
+            android:name=".ui.MyStockDetail"
+            android:parentActivityName=".ui.MyStocksActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.sam_chordas.android.stockhawk.ui.MyStocksActivity" />
+        </activity>
+
+        <service
+            android:name=".service.StockTaskService"
+            android:exported="true"
+            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
             <intent-filter>
                 <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY"/>
             </intent-filter>
         </service>
-        <service android:name="com.sam_chordas.android.stockhawk.service.StockIntentService" />
+        <service android:name=".service.StockIntentService"/>
+
         <provider
+            android:name=".data.generated.QuoteProvider"
             android:authorities="com.sam_chordas.android.stockhawk.data.QuoteProvider"
-            android:name="com.sam_chordas.android.stockhawk.data.generated.QuoteProvider"
             android:exported="false"/>
+
+        <receiver android:name=".ui.widget.StockDetailWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="com.sam_chordas.android.stockhawk.app.ACTION_DATA_UPDATED"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/stock_detail_widget_info"/>
+        </receiver>
+        <service
+            android:name=".ui.widget.StockDetailWidgetRemoteViewsService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
     </application>
 
 </manifest>

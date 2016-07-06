@@ -1,0 +1,93 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/detail_stock"
+                 android:id="@+id/detail_frame"
+                 android:layout_height="wrap_content"
+                 android:layout_width="match_parent"/>
+
+        <android.support.v7.widget.GridLayout
+            android:id="@+id/detail_additional_pane"
+            android:elevation="@dimen/appbar_elevation"
+            android:layout_below="@id/detail_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layoutDirection="locale"
+            android:background="@color/detail_accent_pane_background"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingRight="16dp"
+            android:paddingLeft="16dp"
+            app:alignmentMode="alignMargins"
+            app:columnCount="2"
+            app:rowCount="3">
+
+            <TextView
+                android:id="@+id/detail_stock_label_bid_price"
+                android:layout_height="wrap_content"
+                android:text="@string/detail_stock_bid_price_label"
+                android:textColor="@android:color/white"
+                android:gravity="center_vertical|start"
+                android:textAlignment="viewStart"
+                app:layout_gravity="fill_horizontal"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"/>
+
+            <TextView
+                android:id="@+id/detail_stock_bid_price"
+                android:textColor="@android:color/white"
+                tools:text="placeholder"
+                android:gravity="center_vertical|start"
+                android:textAlignment="viewStart"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill"
+                style="@style/PercentChangeTextStyle"/>
+
+            <TextView
+                android:id="@+id/detail_stock_label_change"
+                android:textColor="@android:color/white"
+                android:text="@string/detail_stock_change_label"
+                android:gravity="center_vertical|start"
+                android:textAlignment="viewStart"
+                app:layout_gravity="fill_horizontal"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"/>
+
+            <TextView
+                android:id="@+id/detail_stock_change"
+                android:textColor="@android:color/white"
+                tools:text="placeholder"
+                android:gravity="center_vertical|start"
+                android:textAlignment="viewStart"
+                app:layout_gravity="fill"
+                style="@style/PercentChangeTextStyle"/>
+
+            <TextView
+                android:id="@+id/detail_stock_label_percent_change"
+                android:textColor="@android:color/white"
+                android:text="@string/detail_stock_percent_change_label"
+                android:gravity="center_vertical|start"
+                android:textAlignment="viewStart"
+                app:layout_gravity="fill_horizontal"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"/>
+
+            <TextView
+                android:id="@+id/detail_stock_percent_change"
+                android:textColor="@android:color/white"
+                tools:text="placeholder"
+                android:gravity="center_vertical|start"
+                android:textAlignment="viewStart"
+                app:layout_gravity="fill"
+                style="@style/PercentChangeTextStyle"/>
+        </android.support.v7.widget.GridLayout>
+    </RelativeLayout>
+</FrameLayout>
