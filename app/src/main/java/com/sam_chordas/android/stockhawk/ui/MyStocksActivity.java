@@ -171,7 +171,7 @@ public class MyStocksActivity extends AppCompatActivity implements
             Intent stockIntentService = new Intent(MyStocksActivity.this,
                     StockIntentService.class);
             stockIntentService.putExtra(StockIntentService.EXTRA_TAG,
-                    StockIntentService.ACTION_PERIODIC_UPDATE);
+                    StockTaskService.ACTION_PERIODIC_UPDATE);
             if (isNetworkAvailable()){
                 startService(stockIntentService);
             } else {

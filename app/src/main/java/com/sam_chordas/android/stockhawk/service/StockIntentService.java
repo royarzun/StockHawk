@@ -17,7 +17,6 @@ public class StockIntentService extends IntentService {
 
   public static final String ACTION_ADD = "add";
   public static final String ACTION_INIT = "init";
-  public static final String ACTION_PERIODIC_UPDATE = "periodic";
 
   public StockIntentService(){
     super(StockIntentService.class.getName());
