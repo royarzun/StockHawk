@@ -46,6 +46,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class StockTaskService extends GcmTaskService{
     private static final String LOG_TAG = StockTaskService.class.getSimpleName();
     private static final String INIT_STOCKS = "\"YHOO\",\"AAPL\",\"GOOG\",\"MSFT\"";
+
+    public static final String ACTION_PERIODIC_UPDATE = "periodic";
     public static final String ACTION_DATA = "com.sam_chordas.android.stockhawk.app.ACTION_DATA_UPDATED";
 
     private Context mContext;
@@ -70,21 +72,27 @@ public class StockTaskService extends GcmTaskService{
         if (mContext == null) {
             mContext = this;
         }
-        if (params.getTag().equals(StockIntentService.ACTION_INIT)){
-            Call<StocksResult> stockQuotesQuery = yahooStockQuotesAPI.getStocks(getQuery(params));
-            stockQuotesQuery.enqueue(new StockQuotesCallBack());
-        } else {
-            Call<StockResult> stockQuoteQuery = yahooStockQuotesAPI.getStock(getQuery(params));
-            stockQuoteQuery.enqueue(new StockQuoteCallBack());
+
+        try {
+            if (params.getTag().equals(StockIntentService.ACTION_INIT)){
+                Call<StocksResult> stockQuotesQuery = yahooStockQuotesAPI.getStocks(getQuery(params));
+                stockQuotesQuery.enqueue(new StockQuotesCallBack());
+            } else {
+                Call<StockResult> stockQuoteQuery = yahooStockQuotesAPI.getStock(getQuery(params));
+                stockQuoteQuery.enqueue(new StockQuoteCallBack());
+            }
+            return GcmNetworkManager.RESULT_SUCCESS;
+
+        } catch (Exception e) {
+            return GcmNetworkManager.RESULT_FAILURE;
         }
-        return GcmNetworkManager.RESULT_SUCCESS;
     }
 
     private String getQuery(TaskParams params){
         final StringBuilder urlStringBuilder = new StringBuilder();
         Cursor initQueryCursor;
         if (params.getTag().equals(StockIntentService.ACTION_INIT) ||
-                params.getTag().equals(StockIntentService.ACTION_PERIODIC_UPDATE)){
+                params.getTag().equals(ACTION_PERIODIC_UPDATE)){
             isUpdate = true;
             initQueryCursor = mContext.getContentResolver()
                     .query(QuoteProvider.Quotes.CONTENT_URI,
