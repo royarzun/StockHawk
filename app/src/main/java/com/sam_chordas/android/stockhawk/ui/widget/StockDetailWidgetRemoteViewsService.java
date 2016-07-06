@@ -13,7 +13,7 @@ import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 
 
-public class StockDetailWidgetIntentService extends RemoteViewsService {
+public class StockDetailWidgetRemoteViewsService extends RemoteViewsService {
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
@@ -69,8 +69,7 @@ public class StockDetailWidgetIntentService extends RemoteViewsService {
                         data == null || !data.moveToPosition(position)) {
                     return null;
                 }
-                RemoteViews views = new RemoteViews(getPackageName(),
-                        R.layout.widget_detail_list_item);
+                RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget_detail_list_item);
                 String symbol = data.getString(data.getColumnIndex(QuoteColumns.SYMBOL));
                 String bidPrice = data.getString(data.getColumnIndex(QuoteColumns.BIDPRICE));
                 String change = data.getString(data.getColumnIndex(QuoteColumns.PERCENT_CHANGE));
@@ -85,6 +84,9 @@ public class StockDetailWidgetIntentService extends RemoteViewsService {
                     views.setInt(R.id.widget_detail_list_item_change,
                             "setBackgroundResource",R.drawable.percent_change_pill_red);
                 }
+                Intent fillInIntent = new Intent();
+                views.setOnClickFillInIntent(R.id.widget_detail_list_item, fillInIntent);
+
                 return views;
             }
 

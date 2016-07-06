@@ -55,6 +55,7 @@
         <receiver android:name=".ui.widget.StockDetailWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="android.intent.action.MAIN"/>
                 <action android:name="com.sam_chordas.android.stockhawk.app.ACTION_DATA_UPDATED"/>
             </intent-filter>
 
@@ -63,7 +64,7 @@
                 android:resource="@xml/stock_detail_widget_info"/>
         </receiver>
         <service
-            android:name=".ui.widget.StockDetailWidgetIntentService"
+            android:name=".ui.widget.StockDetailWidgetRemoteViewsService"
             android:enabled="true"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS"/>
