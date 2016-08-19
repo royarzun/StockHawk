@@ -1,4 +1,4 @@
-# PopularMoviesApp
+# StockHawk App
 
 StockHawk app for Udacity NanoDegree
 
