@@ -1,17 +1,55 @@
-StockHawk
-=========
+# PopularMoviesApp
 
-The task will be to take the user feedback in the UX Review and implement changes that will make the app production ready.
-All of the issues you need to address to meet specifications are hinted at in the UX Review. There are also a few optional ways in which the apps can be improved that are not mentioned in the UX Review.
+StockHawk app for Udacity NanoDegree
 
-The UX Review:
---------------
+## Description of the app
 
-###User Feedback for Stock Hawk:
+Never miss again how your stocks or your favorite companies are doing the global stock market, get a graphical view of what is going on in the world of finances and take informed decisions about what to do with your well earned moneys.
 
-1. Hellen says: "Right now I can't use this app with my screen reader. My friends love it, so I would love to download it, but the buttons don't tell my screen reader what they do."
-2. Your boss says: "We need to prepare Stock Hawk for the Egypt release. Make sure our translators know what to change and make sure the Arabic script will format nicely."
-3. Adebowale says: "Stock Hawk allows me to track the current price of stocks, but to track their prices over time, I need to use an external program. It would be wonderful if you could show more detail on a stock, including its price over time."
-4. Gundega says: "I use a lot of widgets on my Android device, and I would love to have a widget that displays my stock quotes on my home screen."
-5. Jamal says: "I found a bug in your app. Right now when I search for a stock quote that doesn't exist, the app crashes."
-6. Xaio-lu says: "When I opened this app for the first time without a network connection, it was a confusing blank screen. I would love a message that tells me why the screen is blank or whether my stock quotes are out of date."
+### Features
+
+* Follow the stock market from your phone or tablet
+* Get a graphical experience of your favorites stocks price
+* Enjoy a very simplestic and yet helpful stock market widget
+
+## Required Behavior
+
+* App comes with a predefined set of stock quotes
+* App updates the stock quotes periodically
+* User can add any stock using its Stock Market symbol
+* The app presents a widget the user can add to his home screen
+
+## Getting started with the app
+
+All you need to run this app is Android Studio 2.x
+
+## How to Contribute
+
+* Check for open issues or open a fresh issue to start a discussion around a feature idea or a bug.
+* Fork the [repository](https://github.com/royarzun/StockHawk) on GitHub to start making your changes to the **master** branch (or branch off of it).
+* Write a test which shows that the bug was fixed or that the feature works as expected.
+* Send a pull request and bug the maintainer until it gets merged and published.
+
+## License
+
+    MIT License
+
+    Copyright (c) 2016 Ricardo Oyarzun
+    
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+    
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+    
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
